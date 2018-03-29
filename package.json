@@ -1,0 +1,29 @@
+{
+  "name": "proyectomi",
+  "version": "1.0.0",
+  "description": "",
+  "main": "main.js",
+  "dependencies": {
+    "babel-core": "^6.26.0",
+    "babel-loader": "^7.1.1",
+    "babel-preset-es2015": "^6.24.1",
+    "enhanced-resolve": "^4.0.0",
+    "jquery": "^3.3.1",
+    "three": "^0.91.0",
+    "webpack": "^4.4.1"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/eloyedm/proyectomi.git"
+  },
+  "author": "Eloy Diaz",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/eloyedm/proyectomi/issues"
+  },
+  "homepage": "https://github.com/eloyedm/proyectomi#readme"
+}
