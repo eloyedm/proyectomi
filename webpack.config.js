@@ -1,25 +1,39 @@
-var path  = __dirname;
+const webpack = require('webpack');
+const path  = __dirname;
 
-module.exports = {
+var config = {
   entry: {
     main: './main.js'
   },
+  // plugins: [
+  //   new webpack.ProvidePlugin({
+  //     $: 'jquery',
+  //     jquery: 'jQuery',
+  //     "window.jQuery" : "jquery"
+  //   })
+  // ],
   output: {
     path: __dirname + '/dist/',
     filename: '[name].bundle.js'
   },
   module: {
-    loaders: [
+    rules: [
       {
         test: /\.js$/,
-        loader: 'babel-loader'
+        loader: 'babel-loader',
+        query: {
+          presets: ['es2015', 'react', 'env']
+        }
+      },
+      {
+        test: /vendor\/.+\.(jsx|js)$/,
+        loader: "imports?jQuery=jquery,$=jquery,this=>window"
       }
     ]
   },
-  resolve: {
-    alias: {
-      $: "jQuery",
-      $: '$'
-    }
-  },
+  node: {
+    fs: "empty"
+  }
 }
+
+module.exports = config;

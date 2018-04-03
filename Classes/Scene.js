@@ -1,7 +1,7 @@
-import * as THREE from './../node_modules/three/build/three.min.js';
+import {Scene, Color, PerspectiveCamera, WebGLRenderer} from 'three';
 import $ from 'jquery';
 
-class Scene{
+class Escena{
   constructor(alto, ancho){
     this.scene = "";
     this.camera  = "";
@@ -11,17 +11,17 @@ class Scene{
     this.initialize();
   }
   initialize(){
-    this.renderer = new THREE.WebGLRenderer();
-    this.renderer.setClearColor(new THREE.Color(0,0,0));
+    this.renderer = new WebGLRenderer();
+    this.renderer.setClearColor(new Color(0,0,0));
     this.renderer.setSize(this.ancho, this.alto);
 
-    this.camera = new THREE.PerspectiveCamera(
+    this.camera = new PerspectiveCamera(
       75,
       this.ancho /this.alto,
       0.1,
       100
     );
-    this.scene = new THREE.Scene();
+    this.scene = new Scene();
   }
 
   render(){
@@ -40,4 +40,4 @@ class Scene{
   }
 }
 
-export default Scene;
+export default Escena;
