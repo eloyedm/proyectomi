@@ -1,4 +1,13 @@
-import {Scene, Color, PerspectiveCamera, WebGLRenderer} from 'three';
+import {Scene,
+  Color,
+  PerspectiveCamera,
+  WebGLRenderer,
+  BoxGeometry,
+  Mesh,
+  MeshLambertMaterial,
+  MeshPhongMaterial,
+  AmbientLight,
+  DirectionalLight} from 'three';
 import $ from 'jquery';
 
 class Escena{
@@ -22,6 +31,32 @@ class Escena{
       100
     );
     this.scene = new Scene();
+
+    var geometry = new BoxGeometry(1,1,1);
+    var material = new MeshLambertMaterial({
+      color: new Color(0,0,1)
+    });
+
+    var cube1 = new Mesh(geometry, material);
+    cube1.position.set(1,0,0);
+    this.camera.position.set(0,0,2);
+    this.scene.add(cube1);
+
+    material = new MeshPhongMaterial({
+      color: new Color(0.5, 0.5, 0.5),
+      specular: new Color(1,1,1),
+      shininess: 500
+    });
+
+    var cube2 = new Mesh(geometry, material);
+    cube2.position.set(0,0,0);
+    this.scene.add(cube2);
+
+    var ambiental = new AmbientLight(new Color(1,1,1), 1.0);
+    var direccional = new DirectionalLight(new Color(0,0,1), 0.6);
+    direccional.position.set(0,0,1);
+    this.scene.add(ambiental);
+    this.scene.add(direccional);
   }
 
   render(){
@@ -33,8 +68,6 @@ class Escena{
   }
 
   draw(container){
-    console.log(container);
-    console.log($);
     container.append(this.renderer.domElement)
     this.render();
   }
