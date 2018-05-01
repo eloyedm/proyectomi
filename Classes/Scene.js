@@ -9,6 +9,7 @@ import {Scene,
   AmbientLight,
   DirectionalLight} from 'three';
 import $ from 'jquery';
+import Terreno from './Terrain.js';
 
 class Escena{
   constructor(alto, ancho){
