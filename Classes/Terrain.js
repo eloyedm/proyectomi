@@ -8,18 +8,17 @@ import {
 class Terreno{
   constructor(imagen){
     this.heightmap = imagen;
-    this.initialize();
   }
 
   initialize(callback){
     var img = new Image();
     var that = this;
     img.onload = function() {
-      var data = that.getHeightData(that.heightmap, 1);
+      var data = that.getHeightData(img);
       var geometry = new PlaneGeometry(10,10,9,9);
       var texture = ImageUtils.loadTexture(that.heightmap);
       var material = new MeshLambertMaterial({map: texture});
-      plane = new Mesh(geometry, material);
+      var plane = new Mesh(geometry, material);
 
       for (var i = 0; i < plane.geometry.vertices.length; i++) {
         plane.geometry.vertices[i].z = data[i];
@@ -34,12 +33,14 @@ class Terreno{
     var canvas = document.createElement('canvas');
     canvas.width = img.width;
     var context = canvas.getContext('2d');
+    var size = img.width * img.height;
+    var data = new Float32Array( size );
     context.drawImage(img, 0, 0);
 
     for(var i = 0; i < size; i++){
       data[i] = 0;
     }
-    var imgd = context.getImageData(0,0, img,width, img,height);
+    var imgd = context.getImageData(0,0, img.width, img.height);
     var pix = imgd.data;
     var j = 0;
     for (var i = 0; i < pix.length; i+=4) {

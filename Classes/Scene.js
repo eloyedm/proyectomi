@@ -39,7 +39,7 @@ class Escena{
     });
 
     var cube1 = new Mesh(geometry, material);
-    cube1.position.set(1,0,0);
+    cube1.position.set(1,0,-10);
     this.camera.position.set(0,0,2);
     this.scene.add(cube1);
 
@@ -54,10 +54,15 @@ class Escena{
     this.scene.add(cube2);
 
     var ambiental = new AmbientLight(new Color(1,1,1), 1.0);
-    var direccional = new DirectionalLight(new Color(0,0,1), 0.6);
+    var direccional = new DirectionalLight(new Color(1,1,0), 0.6);
     direccional.position.set(0,0,1);
     this.scene.add(ambiental);
     this.scene.add(direccional);
+    var that = this;
+    var terreno = new Terreno('./images/Erenvidor-heightmap.png');
+    terreno.initialize(function(plane){
+      that.scene.add(plane);
+    });
   }
 
   render(){
@@ -69,6 +74,7 @@ class Escena{
   }
 
   draw(container){
+    console.log(this.scene);
     container.append(this.renderer.domElement)
     this.render();
   }
