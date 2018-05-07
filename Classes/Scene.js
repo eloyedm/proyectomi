@@ -61,20 +61,22 @@ class Escena{
     var that = this;
     var terreno = new Terreno('./images/Erenvidor-heightmap.png');
     terreno.initialize(function(plane){
+      console.log(that.scene);
       that.scene.add(plane);
     });
   }
 
   render(){
+    var that = this
     function renderinner(){
-      this.renderer.render(this.scene, this.camera);
-
+      that.renderer.render(that.scene, that.camera);
+      console.log("entra");
       requestAnimationFrame(renderinner);
     }
+    renderinner();
   }
 
   draw(container){
-    console.log(this.scene);
     container.append(this.renderer.domElement)
     this.render();
   }
