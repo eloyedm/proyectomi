@@ -23,7 +23,7 @@ class Terreno{
       for (var i = 0; i < plane.geometry.vertices.length; i++) {
         plane.geometry.vertices[i].z = data[i];
       }
-
+      plane.name= "terreno";
       callback(plane);
     }
     img.src = this.heightmap;
