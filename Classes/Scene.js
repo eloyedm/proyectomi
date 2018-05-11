@@ -12,6 +12,8 @@ import {Scene,
   DirectionalLight} from 'three';
 import $ from 'jquery';
 import Terreno from './Terrain.js';
+import Player from './Player.js';
+const autoBind = require('auto-bind');
 
 class Escena{
   constructor(ancho, alto){
@@ -26,6 +28,7 @@ class Escena{
       'D': false,
       'S' : false
     };
+    autoBind(this);
     this.initialize();
   }
   initialize(){
@@ -67,6 +70,8 @@ class Escena{
 
       that.scene.add(plane);
     });
+
+    this.addPLayers();
   }
 
   addObjectToScene(object){
@@ -79,7 +84,20 @@ class Escena{
 
   keyDown(event){
     this.keys[String.fromCharCode(event.keyCode)] = true;
-    console.log(this.keys);
+    console.log(String.fromCharCode(event.keyCode));
+  }
+
+  addPLayers(){
+    var player1 = new Player('UP', 'DOWN', 'LEFT', 'RIGHT', 1);
+    var player2 = new Player('W', 'S', 'A', 'D', 1);
+    var that = this;
+    player1.drawPlayerModel((playerCargado) => {
+      that.scene.add(playerCargado);
+    });
+    player2.drawSecondPLayerModel((playerCargado) => {
+      playerCargado.position.z = 5;
+      that.scene.add(playerCargado);
+    });
   }
   render(){
     var that = this;
@@ -104,6 +122,16 @@ class Escena{
         height = -5;
       } else if (that.keys["E"]) {
         height = 5;
+      }
+      if (that.keys['&']) {
+        forward2 = 5;
+      } else if (that.keys['(']) {
+        forward2 = -5:
+      }
+      if (that.keys['%']) {
+        yaw2 = -5
+      } else if (that.keys['\'']) {
+        yaw2 = 5;
       }
       // console.log(that.keys);
 
