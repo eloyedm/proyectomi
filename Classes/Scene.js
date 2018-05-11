@@ -93,6 +93,7 @@ class Escena{
     var that = this;
     player1.drawPlayerModel((playerCargado) => {
       that.scene.add(playerCargado);
+      console.log(that.scene.getObjectByName('modeloPlayer'));
     });
     player2.drawSecondPLayerModel((playerCargado) => {
       playerCargado.position.z = 5;
@@ -103,11 +104,13 @@ class Escena{
     var that = this;
     function renderinner(){
       requestAnimationFrame(renderinner);
-
+      var player1 = that.scene.getObjectByName('modeloPlayer');
       var deltaTime = that.clock.getDelta();
       var yaw = 0;
       var forward = 0;
       var height = 0;
+      var yaw2 = 0;
+      var forwar2 = 0;
       if (that.keys["A"]) {
         yaw = 5;
       } else if (that.keys["D"]) {
@@ -123,14 +126,14 @@ class Escena{
       } else if (that.keys["E"]) {
         height = 5;
       }
-      if (that.keys['&']) {
-        forward2 = 5;
-      } else if (that.keys['(']) {
-        forward2 = -5:
+      if (that.keys['K']) {
+        forward2 = 20;
+      } else if (that.keys['I']) {
+        forward2 = -20;
       }
-      if (that.keys['%']) {
+      if (that.keys['J']) {
         yaw2 = -5
-      } else if (that.keys['\'']) {
+      } else if (that.keys['L']) {
         yaw2 = 5;
       }
       // console.log(that.keys);
@@ -138,7 +141,8 @@ class Escena{
       that.camera.rotation.y += yaw * deltaTime;
       that.camera.translateZ(forward * deltaTime);
       that.camera.translateY(height * deltaTime);
-
+      player1.rotation.y += yaw * deltaTime;
+      player1.translateZ(forward * deltaTime);
       that.renderer.render(that.scene, that.camera);
     }
     renderinner();

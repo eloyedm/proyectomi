@@ -19,6 +19,9 @@ class Player{
 
     playerModel.loadModel((objetoCargado) => {
       objetoCargado.name = 'modeloPlayer';
+      objetoCargado.position.x = 0;
+      objetoCargado.position.y = 1;
+      objetoCargado.position.z = 0;
       callback(objetoCargado);
     })
   }
