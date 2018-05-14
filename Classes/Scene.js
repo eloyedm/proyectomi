@@ -49,8 +49,7 @@ class Escena{
       color: new Color(0,0,1)
     });
 
-    this.camera.position.set(0,0,2);
-
+    this.camera.position.set(10,10,-15);
     material = new MeshPhongMaterial({
       color: new Color(0.5, 0.5, 0.5),
       specular: new Color(1,1,1),
@@ -93,24 +92,27 @@ class Escena{
     var that = this;
     player1.drawPlayerModel((playerCargado) => {
       that.scene.add(playerCargado);
-      console.log(that.scene.getObjectByName('modeloPlayer'));
+      that.camera.lookAt(playerCargado.position);
+      console.log(that.camera);
     });
     player2.drawSecondPLayerModel((playerCargado) => {
       playerCargado.position.z = 5;
       that.scene.add(playerCargado);
     });
+
   }
   render(){
     var that = this;
     function renderinner(){
       requestAnimationFrame(renderinner);
       var player1 = that.scene.getObjectByName('modeloPlayer');
+      var player2 = that.scene.getObjectByName('modeloPlayer2');
       var deltaTime = that.clock.getDelta();
       var yaw = 0;
       var forward = 0;
       var height = 0;
       var yaw2 = 0;
-      var forwar2 = 0;
+      var forward2 = 0;
       if (that.keys["A"]) {
         yaw = 5;
       } else if (that.keys["D"]) {
@@ -138,11 +140,13 @@ class Escena{
       }
       // console.log(that.keys);
 
-      that.camera.rotation.y += yaw * deltaTime;
-      that.camera.translateZ(forward * deltaTime);
+      // that.camera.rotation.y += yaw * deltaTime;
+      player2.translateX(forward * deltaTime);
       that.camera.translateY(height * deltaTime);
-      player1.rotation.y += yaw * deltaTime;
-      player1.translateZ(forward * deltaTime);
+      player1.translateX(forward2 * deltaTime);
+      player1.rotation.y += yaw2 * deltaTime;
+      player2.rotation.y += yaw * deltaTime;
+      // that.camera.lookAt(player1.position);
       that.renderer.render(that.scene, that.camera);
     }
     renderinner();

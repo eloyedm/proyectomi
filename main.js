@@ -1,6 +1,7 @@
 import $ from 'jquery';
 import Escena from './Classes/Scene.js';
 
+
 class Main{
   constructor() {
     this.initialize();
