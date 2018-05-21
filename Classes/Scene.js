@@ -13,10 +13,11 @@ import {Scene,
 import $ from 'jquery';
 import Terreno from './Terrain.js';
 import Player from './Player.js';
+import Pista from './Road.js';
 const autoBind = require('auto-bind');
 
 class Escena{
-  constructor(ancho, alto){
+  constructor(ancho, alto, quality){
     this.scene = "";
     this.camera  = "";
     this.renderer = "";
@@ -28,11 +29,14 @@ class Escena{
       'D': false,
       'S' : false
     };
+    this.quality = quality;
     autoBind(this);
     this.initialize();
   }
   initialize(){
-    this.renderer = new WebGLRenderer();
+    this.renderer = new WebGLRenderer({
+      precision: this.quality
+    });
     this.renderer.setClearColor(new Color(0,0,0));
     this.renderer.setSize(this.ancho, this.alto);
     this.clock = new Clock();
@@ -63,10 +67,10 @@ class Escena{
     var that = this;
     var terreno = new Terreno('./images/Erenvidor-heightmap.png');
     var grid = new GridHelper(50, 10, 0xffffff, 0xffffff);
+    var pista = new Pista();
     grid.position.y = -1;
     this.scene.add(grid);
     terreno.initialize(function(plane){
-
       that.scene.add(plane);
     });
 
@@ -83,7 +87,6 @@ class Escena{
 
   keyDown(event){
     this.keys[String.fromCharCode(event.keyCode)] = true;
-    console.log(String.fromCharCode(event.keyCode));
   }
 
   addPLayers(){
@@ -93,7 +96,6 @@ class Escena{
     player1.drawPlayerModel((playerCargado) => {
       that.scene.add(playerCargado);
       that.camera.lookAt(playerCargado.position);
-      console.log(that.camera);
     });
     player2.drawSecondPLayerModel((playerCargado) => {
       playerCargado.position.z = 5;
@@ -141,11 +143,15 @@ class Escena{
       // console.log(that.keys);
 
       // that.camera.rotation.y += yaw * deltaTime;
-      player2.translateX(forward * deltaTime);
+      if (typeof player1 != "undefined") {
+        player1.translateX(forward2 * deltaTime);
+        player1.rotation.y += yaw2 * deltaTime;
+      }
+      if (typeof player2 != "undefined") {
+        player2.translateX(forward * deltaTime);
+        player2.rotation.y += yaw * deltaTime;
+      }
       that.camera.translateY(height * deltaTime);
-      player1.translateX(forward2 * deltaTime);
-      player1.rotation.y += yaw2 * deltaTime;
-      player2.rotation.y += yaw * deltaTime;
       // that.camera.lookAt(player1.position);
       that.renderer.render(that.scene, that.camera);
     }
