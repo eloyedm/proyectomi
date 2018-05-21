@@ -4,16 +4,20 @@ import {Scene,
   WebGLRenderer,
   BoxGeometry,
   Mesh,
+  Math,
   MeshLambertMaterial,
   MeshPhongMaterial,
   AmbientLight,
   GridHelper,
   Clock,
+  Vector3,
+  Matrix4,
   DirectionalLight} from 'three';
 import $ from 'jquery';
 import Terreno from './Terrain.js';
 import Player from './Player.js';
 import Pista from './Road.js';
+import Skydome from './Skydome.js';
 const autoBind = require('auto-bind');
 
 class Escena{
@@ -40,7 +44,7 @@ class Escena{
     this.renderer.setClearColor(new Color(0,0,0));
     this.renderer.setSize(this.ancho, this.alto);
     this.clock = new Clock();
-
+    var pista = new Pista();
     this.camera = new PerspectiveCamera(
       75,
       this.ancho /this.alto,
@@ -53,7 +57,6 @@ class Escena{
       color: new Color(0,0,1)
     });
 
-    this.camera.position.set(10,10,-15);
     material = new MeshPhongMaterial({
       color: new Color(0.5, 0.5, 0.5),
       specular: new Color(1,1,1),
@@ -64,16 +67,22 @@ class Escena{
     direccional.position.set(0,0,1);
     this.scene.add(ambiental);
     this.scene.add(direccional);
+    var skydome = new Skydome();
+    this.scene.add(skydome.initialize());
     var that = this;
     var terreno = new Terreno('./images/Erenvidor-heightmap.png');
     var grid = new GridHelper(50, 10, 0xffffff, 0xffffff);
-    var pista = new Pista();
+    console.log(that.scene.getObjectByName("skydome"));
     grid.position.y = -1;
     this.scene.add(grid);
     terreno.initialize(function(plane){
       that.scene.add(plane);
     });
-
+    pista.createBoxes(function(boxes){
+      for (var i = 0; i < boxes.length; i++) {
+        that.scene.add(boxes[i]);
+      }
+    })
     this.addPLayers();
   }
 
@@ -94,13 +103,15 @@ class Escena{
     var player2 = new Player('W', 'S', 'A', 'D', 1);
     var that = this;
     player1.drawPlayerModel((playerCargado) => {
+      // that.camera.position.set(0, 5, -3);
+      // playerCargado.rotateY(Math.degToRad(90));
       that.scene.add(playerCargado);
-      that.camera.lookAt(playerCargado.position);
+      // that.camera.lookAt(playerCargado.position);
     });
-    player2.drawSecondPLayerModel((playerCargado) => {
-      playerCargado.position.z = 5;
-      that.scene.add(playerCargado);
-    });
+    // player2.drawSecondPLayerModel((playerCargado) => {
+    //   playerCargado.position.z = 5;
+    //   that.scene.add(playerCargado);
+    // });
 
   }
   render(){
@@ -144,16 +155,28 @@ class Escena{
 
       // that.camera.rotation.y += yaw * deltaTime;
       if (typeof player1 != "undefined") {
-        player1.translateX(forward2 * deltaTime);
         player1.rotation.y += yaw2 * deltaTime;
+        player1.translateZ(forward2 * deltaTime);
+        var relativeCameraOffset = new Vector3(0,5,10);
+        var cameraOffset = relativeCameraOffset.applyMatrix4( player1.matrixWorld );
+        that.camera.position.x = cameraOffset.x;
+        that.camera.position.y = cameraOffset.y;
+        that.camera.position.z = cameraOffset.z;
+        that.camera.lookAt(player1.position);
       }
       if (typeof player2 != "undefined") {
         player2.translateX(forward * deltaTime);
         player2.rotation.y += yaw * deltaTime;
       }
-      that.camera.translateY(height * deltaTime);
+
+      // that.camera.position = player1.position;
+      // that.camera.translateX((forward2 * -1) * deltaTime);
+      // that.camera.position.y  = player1.position.y + 2;
+      // that.camera.translateY(height * deltaTime);
       // that.camera.lookAt(player1.position);
-      that.renderer.render(that.scene, that.camera);
+      if (typeof that.scene != "undefined" && typeof that.camera != "undefined") {
+        that.renderer.render(that.scene, that.camera);
+      }
     }
     renderinner();
   }
