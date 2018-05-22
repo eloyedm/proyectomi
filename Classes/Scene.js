@@ -10,6 +10,7 @@ import {Scene,
   AmbientLight,
   GridHelper,
   Clock,
+  Box3,
   Vector3,
   Matrix4,
   DirectionalLight} from 'three';
@@ -34,6 +35,7 @@ class Escena{
       'S' : false
     };
     this.quality = quality;
+    this.collidableMeshes = [];
     autoBind(this);
     this.initialize();
   }
@@ -77,11 +79,12 @@ class Escena{
     terreno.initialize(function(plane){
       that.scene.add(plane);
     });
-    // pista.createBoxes(function(boxes){
-    //   for (var i = 0; i < boxes.length; i++) {
-    //     that.scene.add(boxes[i]);
-    //   }
-    // })
+    pista.createBoxes(function(boxes){
+      for (var i = 0; i < boxes.length; i++) {
+        that.collidableMeshes.push(boxes[i]);
+        that.scene.add(boxes[i]);
+      }
+    })
     this.addPLayers();
   }
 
@@ -105,6 +108,7 @@ class Escena{
       // that.camera.position.set(0, 5, -3);
       // playerCargado.rotateY(Math.degToRad(90));
       playerCargado.rotation.y += 90;
+      console.log(player);
       that.scene.add(playerCargado);
       // that.camera.lookAt(playerCargado.position);
     });
@@ -114,6 +118,26 @@ class Escena{
     // });
 
   }
+
+  checkCollisions(mesh){
+    console.log(this.collidableMeshes);
+    console.log(mesh);
+    debugger;
+    var originPoint = mesh.position.clone();
+    for (var vertexIndex = 0; vertexIndex < mesh.geometry.vertices.length; vertexIndex++) {
+      var localVertex = mesh.geometry.vertices[vertexIndex].clone();
+      var globalVertex = localVertex.applyNatrix(mesh.matrix);
+      var directionVector = globalVertex.sub(mesh.position);
+
+      var ray = new Raycaster(originPoint, directionVector.clone().normalize());
+      var collisionResults = ray.intersectObjects(this.collidableMeshes);
+      if(collisionResults.length > 0 && collisionResults[0].distance < directionVector.length() ){
+        console.log(collisionResults);
+        debugger;
+      }
+    }
+  }
+
   render(){
     var that = this;
     function renderinner(){
@@ -163,11 +187,14 @@ class Escena{
         that.camera.position.y = cameraOffset.y;
         that.camera.position.z = cameraOffset.z;
         that.camera.lookAt(player1.position);
+
+        that.checkCollisions(player1);
       }
       if (typeof player2 != "undefined") {
         player2.translateX(forward * deltaTime);
         player2.rotation.y += yaw * deltaTime;
       }
+
 
       // that.camera.position = player1.position;
       // that.camera.translateX((forward2 * -1) * deltaTime);
