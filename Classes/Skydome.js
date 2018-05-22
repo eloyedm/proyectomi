@@ -10,7 +10,7 @@ class Skydome {
     this.texture = './../images/Erenvidor-heightmap.png';
   }
   initialize(callback){
-    var skyGeo = new SphereGeometry(100, 25, 25);
+    var skyGeo = new SphereGeometry(200, 25, 25);
     var loader = new TextureLoader(),
     texture = loader.load(this.texture);
     var material = new MeshPhongMaterial({

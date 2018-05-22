@@ -19,7 +19,7 @@ class Terreno{
       var texture = ImageUtils.loadTexture(that.heightmap);
       var material = new MeshLambertMaterial({map: texture});
       var plane = new Mesh(geometry, material);
-
+      console.log(data);
       for (var i = 0; i < plane.geometry.vertices.length; i++) {
         plane.geometry.vertices[i].z = data[i];
       }

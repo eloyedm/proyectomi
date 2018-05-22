@@ -49,7 +49,7 @@ class Escena{
       75,
       this.ancho /this.alto,
       0.1,
-      100
+      300
     );
     this.scene = new Scene();
 
@@ -72,17 +72,16 @@ class Escena{
     var that = this;
     var terreno = new Terreno('./images/Erenvidor-heightmap.png');
     var grid = new GridHelper(50, 10, 0xffffff, 0xffffff);
-    console.log(that.scene.getObjectByName("skydome"));
     grid.position.y = -1;
     this.scene.add(grid);
     terreno.initialize(function(plane){
       that.scene.add(plane);
     });
-    pista.createBoxes(function(boxes){
-      for (var i = 0; i < boxes.length; i++) {
-        that.scene.add(boxes[i]);
-      }
-    })
+    // pista.createBoxes(function(boxes){
+    //   for (var i = 0; i < boxes.length; i++) {
+    //     that.scene.add(boxes[i]);
+    //   }
+    // })
     this.addPLayers();
   }
 
@@ -105,6 +104,7 @@ class Escena{
     player1.drawPlayerModel((playerCargado) => {
       // that.camera.position.set(0, 5, -3);
       // playerCargado.rotateY(Math.degToRad(90));
+      playerCargado.rotation.y += 90;
       that.scene.add(playerCargado);
       // that.camera.lookAt(playerCargado.position);
     });
@@ -157,7 +157,7 @@ class Escena{
       if (typeof player1 != "undefined") {
         player1.rotation.y += yaw2 * deltaTime;
         player1.translateZ(forward2 * deltaTime);
-        var relativeCameraOffset = new Vector3(0,5,10);
+        var relativeCameraOffset = new Vector3(0,5,20);
         var cameraOffset = relativeCameraOffset.applyMatrix4( player1.matrixWorld );
         that.camera.position.x = cameraOffset.x;
         that.camera.position.y = cameraOffset.y;
