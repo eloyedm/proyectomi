@@ -13,6 +13,7 @@ import {Scene,
   Box3,
   Vector3,
   Matrix4,
+  Raycaster,
   DirectionalLight} from 'three';
 import $ from 'jquery';
 import Terreno from './Terrain.js';
@@ -106,9 +107,8 @@ class Escena{
     var that = this;
     player1.drawPlayerModel((playerCargado) => {
       // that.camera.position.set(0, 5, -3);
-      // playerCargado.rotateY(Math.degToRad(90));
-      playerCargado.rotation.y += 90;
-      console.log(player);
+      playerCargado.rotateY(Math.degToRad(90));
+      // playerCargado.rotation.y += 90;
       that.scene.add(playerCargado);
       // that.camera.lookAt(playerCargado.position);
     });
@@ -120,20 +120,18 @@ class Escena{
   }
 
   checkCollisions(mesh){
-    console.log(this.collidableMeshes);
-    console.log(mesh);
-    debugger;
     var originPoint = mesh.position.clone();
-    for (var vertexIndex = 0; vertexIndex < mesh.geometry.vertices.length; vertexIndex++) {
-      var localVertex = mesh.geometry.vertices[vertexIndex].clone();
-      var globalVertex = localVertex.applyNatrix(mesh.matrix);
+    for (var vertexIndex = 0; vertexIndex < mesh.children.length; vertexIndex++) {
+      var localVertex = mesh.children[vertexIndex].clone();
+      var globalVertex = localVertex.position.applyMatrix4(mesh.matrix);
       var directionVector = globalVertex.sub(mesh.position);
 
       var ray = new Raycaster(originPoint, directionVector.clone().normalize());
       var collisionResults = ray.intersectObjects(this.collidableMeshes);
       if(collisionResults.length > 0 && collisionResults[0].distance < directionVector.length() ){
-        console.log(collisionResults);
-        debugger;
+        if(collisionResults[0].object.id == this.collidableMeshes[0].id) {
+          this.collidableMeshes.splice(0,1);
+        }
       }
     }
   }
