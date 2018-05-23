@@ -106,9 +106,8 @@ class Escena{
     var that = this;
     player1.drawPlayerModel((playerCargado) => {
       // that.camera.position.set(0, 5, -3);
-      // playerCargado.rotateY(Math.degToRad(90));
+      playerCargado.rotateY(Math.degToRad(45));
       playerCargado.rotation.y += 90;
-      console.log(player);
       that.scene.add(playerCargado);
       // that.camera.lookAt(playerCargado.position);
     });
@@ -177,7 +176,7 @@ class Escena{
       }
       // console.log(that.keys);
 
-      // that.camera.rotation.y += yaw * deltaTime;
+      // that.camera.rotklation.y += yaw * deltaTime;
       if (typeof player1 != "undefined") {
         player1.rotation.y += yaw2 * deltaTime;
         player1.translateZ(forward2 * deltaTime);
@@ -188,7 +187,7 @@ class Escena{
         that.camera.position.z = cameraOffset.z;
         that.camera.lookAt(player1.position);
 
-        that.checkCollisions(player1);
+        // that.checkCollisions(player1);
       }
       if (typeof player2 != "undefined") {
         player2.translateX(forward * deltaTime);
