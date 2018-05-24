@@ -20,19 +20,20 @@ class Player{
 
   drawPlayerModel(callback){
     var playerModel = new Model('./Models/', 'car.obj', 'car.mtl')
-
+    console.log(playerModel);
     playerModel.loadModel((objetoCargado) => {
       objetoCargado.name = 'modeloPlayer';
       objetoCargado.position.x = 0;
       objetoCargado.position.y = 1;
       objetoCargado.position.z = 0;
-      var geometry = new BoxGeometry( 1, 1, 1 );
-      var material = new MeshBasicMaterial( {color: 0xffffff} );
-      var cube = new Mesh( geometry, material );
-      cube.position.x = 0;
-      cube.position.y = 0;
-      cube.position.z = 0;
-      objetoCargado.add(cube);
+      console.log(objetoCargado);
+      // var geometry = new BoxGeometry( 3, 3, 3 );
+      // var material = new MeshBasicMaterial( {color: 0xffffff} );
+      // var cube = new Mesh( geometry, material );
+      // cube.position.x = 0;
+      // cube.position.y = 0;
+      // cube.position.z = 0;
+      // objetoCargado.add(cube);
       callback(objetoCargado);
     })
   }
