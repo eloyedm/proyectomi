@@ -87,6 +87,10 @@ class Escena{
       }
     })
     this.addPLayers();
+    terreno.buildTrack(function(terrenoCargado){
+      terrenoCargado.scale.set(10,10,10);
+      that.scene.add(terrenoCargado);
+    });
   }
 
   addObjectToScene(object){

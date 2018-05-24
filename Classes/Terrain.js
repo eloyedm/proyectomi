@@ -4,6 +4,7 @@ import {
   MeshLambertMaterial,
   Mesh
 } from 'three';
+import Model from './Model.js';
 
 class Terreno{
   constructor(imagen){
@@ -18,7 +19,7 @@ class Terreno{
       var geometry = new PlaneGeometry(10,10,9,9);
       var texture = ImageUtils.loadTexture(that.heightmap);
       var material = new MeshLambertMaterial({map: texture});
-      var plane = new Mesh(geometry, material);      
+      var plane = new Mesh(geometry, material);
       for (var i = 0; i < plane.geometry.vertices.length; i++) {
         plane.geometry.vertices[i].z = data[i];
       }
@@ -48,6 +49,24 @@ class Terreno{
     }
 
     return data;
+  }
+
+  buildTrack(callback){
+    var tackModel = new Model('./Models/', 'road.obj', 'car.mtl');
+    tackModel.loadModel((objetoCargado) => {
+      objetoCargado.name = 'modeloPista';
+      objetoCargado.position.x = 0;
+      objetoCargado.position.y = 1;
+      objetoCargado.position.z = 0;
+      // var geometry = new BoxGeometry( 3, 3, 3 );
+      // var material = new MeshBasicMaterial( {color: 0xffffff} );
+      // var cube = new Mesh( geometry, material );
+      // cube.position.x = 0;
+      // cube.position.y = 0;
+      // cube.position.z = 0;
+      // objetoCargado.add(cube);
+      callback(objetoCargado);
+    })
   }
 }
 
