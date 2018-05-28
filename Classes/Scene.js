@@ -88,7 +88,7 @@ class Escena{
     })
     this.addPLayers();
     terreno.buildTrack(function(terrenoCargado){
-      terrenoCargado.scale.set(10,10,10);
+      // terrenoCargado.scale.set(10,10,10);
       that.scene.add(terrenoCargado);
     });
   }
@@ -111,8 +111,10 @@ class Escena{
     var that = this;
     player1.drawPlayerModel((playerCargado) => {
       // that.camera.position.set(0, 5, -3);
-      playerCargado.rotateY(Math.degToRad(45));
-      playerCargado.rotation.y += 90;
+      playerCargado.position.x = -176;
+      playerCargado.position.y = 31;
+      playerCargado.position.z = -10;
+      // playerCargado.rotation.y += 90;
       that.scene.add(playerCargado);
       // that.camera.lookAt(playerCargado.position);
     });
@@ -135,6 +137,7 @@ class Escena{
       if(collisionResults.length > 0 && collisionResults[0].distance < directionVector.length() ){
         if(collisionResults[0].object.id == this.collidableMeshes[0].id) {
           this.collidableMeshes.splice(0,1);
+          this.removeObjectFromScene(collisionResults[0].object.name);
         }
       }
     }
@@ -168,14 +171,14 @@ class Escena{
         height = 5;
       }
       if (that.keys['K']) {
-        forward2 = 20;
+        forward2 = 10;
       } else if (that.keys['I']) {
-        forward2 = -20;
+        forward2 = -10;
       }
       if (that.keys['J']) {
-        yaw2 = -5
+        yaw2 = 3
       } else if (that.keys['L']) {
-        yaw2 = 5;
+        yaw2 = -3;
       }
       // console.log(that.keys);
 
@@ -183,14 +186,15 @@ class Escena{
       if (typeof player1 != "undefined") {
         player1.rotation.y += yaw2 * deltaTime;
         player1.translateZ(forward2 * deltaTime);
-        var relativeCameraOffset = new Vector3(0,5,20);
+        player1.translateY(height* deltaTime);
+        var relativeCameraOffset = new Vector3(0,3,4);
         var cameraOffset = relativeCameraOffset.applyMatrix4( player1.matrixWorld );
         that.camera.position.x = cameraOffset.x;
         that.camera.position.y = cameraOffset.y;
         that.camera.position.z = cameraOffset.z;
         that.camera.lookAt(player1.position);
-
-        // that.checkCollisions(player1);
+        console.log(player1.position);
+        that.checkCollisions(player1);
       }
       if (typeof player2 != "undefined") {
         player2.translateX(forward * deltaTime);
@@ -208,6 +212,11 @@ class Escena{
       }
     }
     renderinner();
+  }
+
+  removeObjectFromScene(name){
+    var selectedObject = this.scene.getObjectByName(name);
+    this.scene.remove(selectedObject);
   }
 
   draw(container){

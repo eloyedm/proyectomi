@@ -24,9 +24,9 @@ class Pista{
           cube.position.x = data[i].x;
           cube.position.y = data[i].y;
           cube.position.z = data[i].z;
+          cube.name = data[i].name;
           boxes.push(cube);
         }
-        console.log(boxes);
         that.checkpoints = data;
         callback(boxes);
       },

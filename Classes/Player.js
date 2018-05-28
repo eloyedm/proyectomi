@@ -19,7 +19,7 @@ class Player{
   }
 
   drawPlayerModel(callback){
-    var playerModel = new Model('./Models/', 'car.obj', 'car.mtl');    
+    var playerModel = new Model('./Models/', 'car.obj', 'car.mtl');
     playerModel.loadModel((objetoCargado) => {
       objetoCargado.name = 'modeloPlayer';
       objetoCargado.position.x = 0;
@@ -42,8 +42,9 @@ class Player{
     playerModel.loadModel((objetoCargado) => {
       objetoCargado.name = 'modeloPlayer2';
       objetoCargado.position.x = 0;
-      objetoCargado.position.y = 1;
+      objetoCargado.position.y = 10;
       objetoCargado.position.z = 0;
+      // playerCargado.rotation.set(0 ,90,0);
       callback(objetoCargado);
     })
   }

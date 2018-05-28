@@ -52,7 +52,7 @@ class Terreno{
   }
 
   buildTrack(callback){
-    var tackModel = new Model('./Models/', 'road.obj', 'car.mtl');
+    var tackModel = new Model('./Models/', 'Track.obj', 'Track.mtl');
     tackModel.loadModel((objetoCargado) => {
       objetoCargado.name = 'modeloPista';
       objetoCargado.position.x = 0;
