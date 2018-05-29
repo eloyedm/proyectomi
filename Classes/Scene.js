@@ -21,6 +21,7 @@ import Player from './Player.js';
 import Pista from './Road.js';
 import Skydome from './Skydome.js';
 import Score from './Score.js';
+import Powerup from './Powerup.js';
 const autoBind = require('auto-bind');
 
 class Escena{
@@ -82,6 +83,7 @@ class Escena{
     var grid = new GridHelper(50, 10, 0xffffff, 0xffffff);
     grid.position.y = -1;
     this.scene.add(grid);
+    var powers = new Powerup();
     terreno.initialize(function(plane){
       that.scene.add(plane);
     });
@@ -92,11 +94,17 @@ class Escena{
       }
     })
     this.addPLayers();
+
     terreno.buildTrack(function(terrenoCargado){
       // terrenoCargado.scale.set(10,10,10);
       that.scene.add(terrenoCargado);
       that.track = that.scene.getObjectByName('modeloPista');
       that.collidableMeshes.push(terrenoCargado.children[0]);
+      var testPower = powers.basePowerup;
+      testPower.position.x = -180;
+      testPower.position.y = 41;
+      testPower.position.z = -15;
+      that.scene.add(testPower);
     });
   }
 
@@ -148,11 +156,11 @@ class Escena{
           // mesh.position.y = collisionResults[0].point.y;
           this.removeObjectFromScene(collisionResults[0].object.name);
         }
-        if (collisionResults[0].object.name == 'Road') {
-          console.log("tamos chocando");
-          mesh.position.y = collisionResults[0].point.y;
-          mesh.updateMatrix();
-        }
+        // if (collisionResults[0].object.name == 'Road') {
+        //   console.log("tamos chocando");
+        //   mesh.position.y = collisionResults[0].point.y;
+        //   mesh.updateMatrix();
+        // }
       }
     }
   }
@@ -217,6 +225,8 @@ class Escena{
         yaw2 = -3;
       }
       if (that.keys['U']) {
+        cancelAnimationFrame(this.id);
+        $("#scene-container").empty();
         $(".general-container").trigger('gameOver', {score: Math.ceil(that.score.total)});
       }
       // console.log(that.keys);
@@ -227,7 +237,7 @@ class Escena{
         // player1.position.y -= 0.01;
         player1.translateZ(forward2 * deltaTime);
         player1.translateY(height* deltaTime);
-        var relativeCameraOffset = new Vector3(0,3,4);
+        var relativeCameraOffset = new Vector3(0,2,3);
         var cameraOffset = relativeCameraOffset.applyMatrix4( player1.matrixWorld );
         that.camera.position.x = cameraOffset.x;
         that.camera.position.y = cameraOffset.y;
@@ -235,7 +245,10 @@ class Escena{
         that.camera.lookAt(player1.position);
         console.log(player1.position);
         that.checkCollisions(player1);
-        that.keepCarOnTrack(player1);
+        if (that.collidableMeshes.length == 0) {
+          $(".general-container").trigger('gameOver', {score: Math.ceil(that.score.total)});
+        }
+        // that.keepCarOnTrack(player1);
       }
       if (typeof player2 != "undefined") {
         player2.translateX(forward * deltaTime);

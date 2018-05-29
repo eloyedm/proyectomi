@@ -1,9 +1,4 @@
 import Model from './Model.js';
-import {
-  Mesh,
-  BoxGeometry,
-  MeshBasicMaterial
-} from 'three';
 class Player{
   constructor(forward, back, left, right, number){
     this.forwardKey = forward;

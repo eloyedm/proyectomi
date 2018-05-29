@@ -12,7 +12,6 @@ class Model{
 
   loadModel(callback){
     var mtlLoader = new MTLLoader();
-
     mtlLoader.setPath(this.path);
     var that = this;
     var material = this.mtlFile;
@@ -23,6 +22,27 @@ class Model{
       var objLoader = new THREE.OBJLoader();
       objLoader.setPath(that.path);
       objLoader.setMaterials(material);
+      objLoader.load(this.objFile, (objCargado)=> {
+      //Este bloque de codigo solo se ejecuta cuando termine la carga del OBJ
+      callback(objCargado);
+      });
+    });
+  }
+
+  loadModelWithTexture(texture, callback){
+    var mtlLoader = new MTLLoader();
+    var textureLoader = new THREE.TextureLoader();
+    var textureMaterial = new THREE.MeshLambertMaterial({ map: textureLoader.load(texture) })
+    mtlLoader.setPath(this.path);
+    var that = this;
+    var material = this.mtlFile;
+    mtlLoader.load(this.mtlFile, (material) => {
+      //Este bloque de codigo solo se ejecuta cuando termine la carga del MTL
+      // a esto se le llama una funcion lambda
+      //nos va a devolver un parametro cuando termine
+      var objLoader = new THREE.OBJLoader();
+      objLoader.setPath(that.path);
+      objLoader.setMaterials(material, textureMaterial);
       objLoader.load(this.objFile, (objCargado)=> {
       //Este bloque de codigo solo se ejecuta cuando termine la carga del OBJ
       callback(objCargado);
