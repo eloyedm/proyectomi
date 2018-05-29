@@ -1,0 +1,117 @@
+{
+  "_args": [
+    [
+      {
+        "raw": "three-gpu-particle-system@^1.0.0",
+        "scope": null,
+        "escapedName": "three-gpu-particle-system",
+        "name": "three-gpu-particle-system",
+        "rawSpec": "^1.0.0",
+        "spec": ">=1.0.0 <2.0.0",
+        "type": "range"
+      },
+      "/Users/eloydiaz/Sites/proyectomi"
+    ]
+  ],
+  "_from": "three-gpu-particle-system@>=1.0.0 <2.0.0",
+  "_id": "three-gpu-particle-system@1.0.0",
+  "_inCache": true,
+  "_location": "/three-gpu-particle-system",
+  "_nodeVersion": "9.8.0",
+  "_npmOperationalInternal": {
+    "host": "s3://npm-registry-packages",
+    "tmp": "tmp/three-gpu-particle-system_1.0.0_1525033176915_0.6338437657772846"
+  },
+  "_npmUser": {
+    "name": "codetheorist",
+    "email": "codetheorist@gmail.com"
+  },
+  "_npmVersion": "5.6.0",
+  "_phantomChildren": {},
+  "_requested": {
+    "raw": "three-gpu-particle-system@^1.0.0",
+    "scope": null,
+    "escapedName": "three-gpu-particle-system",
+    "name": "three-gpu-particle-system",
+    "rawSpec": "^1.0.0",
+    "spec": ">=1.0.0 <2.0.0",
+    "type": "range"
+  },
+  "_requiredBy": [
+    "#USER",
+    "/"
+  ],
+  "_resolved": "https://registry.npmjs.org/three-gpu-particle-system/-/three-gpu-particle-system-1.0.0.tgz",
+  "_shasum": "b3617395cad14cc3bb5b486b3e1e3fe659d16b82",
+  "_shrinkwrap": null,
+  "_spec": "three-gpu-particle-system@^1.0.0",
+  "_where": "/Users/eloydiaz/Sites/proyectomi",
+  "author": {
+    "name": "Alex Scott",
+    "email": "codetheorist@gmail.com"
+  },
+  "bugs": {
+    "url": "https://github.com/codetheorist/three-gpu-particle-system/issues"
+  },
+  "dependencies": {},
+  "description": "NodeJS wrapper for Three.js' TDSLoader function",
+  "devDependencies": {
+    "babel-core": "^6.2.1",
+    "babel-preset-es2015": "^6.1.18",
+    "chai": "^3.4.1",
+    "colors": "^1.1.2",
+    "gulp": "^3.9.0",
+    "gulp-babel": "^6.1.0",
+    "gulp-clean": "^0.3.1",
+    "gulp-coveralls": "^0.1.4",
+    "gulp-istanbul": "^0.10.3",
+    "gulp-jshint": "^2.0.0",
+    "gulp-mocha": "^2.2.0",
+    "gulp-sourcemaps": "^1.6.0",
+    "jshint": "^2.8.0",
+    "jshint-stylish": "^2.1.0",
+    "remap-istanbul": "^0.4.0",
+    "source-map-support": "^0.3.3",
+    "three": "^0.84.0"
+  },
+  "directories": {},
+  "dist": {
+    "integrity": "sha512-6OqThHNG8FYIxVDjhomCTT4YzUkj9xds5ooDDk6+EHtllm949H0P036Vvl4RU68TUhwwyM03CPaSaC6TFsjWHw==",
+    "shasum": "b3617395cad14cc3bb5b486b3e1e3fe659d16b82",
+    "tarball": "https://registry.npmjs.org/three-gpu-particle-system/-/three-gpu-particle-system-1.0.0.tgz",
+    "fileCount": 6,
+    "unpackedSize": 25498,
+    "npm-signature": "-----BEGIN PGP SIGNATURE-----\r\nVersion: OpenPGP.js v3.0.4\r\nComment: https://openpgpjs.org\r\n\r\nwsFcBAEBCAAQBQJa5ijZCRA9TVsSAnZWagAAQ2MQAKOcaQYbI7AY28pEVs0G\nmSXtCaXsRYJ/U7WJqpQZV2mokTsmPY76l2qcf/qiKZUrCClNApG4Y6i58Vf7\nKv/TkqfGkf3TP3bx8I5qBOkfpPzRqz9LEtqYmamrPYe36oZ6Xxq37r+4SB67\nX1U1cQra/sz3ugNu6oWNDJJxRwRLE3nFqk0liszyu+CrlxGVx1pGUkluGzlZ\n5CdRWPxia9u+v6G5h+hIWfSwPYQdjNjSxSzJ6HCj8mhnAM/c+u+p1xOQlh3X\nci/OSocL8moziMQwFC9dg/8U7ttfHc5XHr8LMw0SzdGh7s7t0yfLtd1W37H8\nnA9d4ukfi8q4napYbWVVM3njjR9k4+9S3b+dH1GLSqRtVDyQSBeeWRvqv6Es\ngabe+9pu65IkdgcLLC10oDeLTaV6qVv/nvZORSJnX/cyl5v3TVn+dk5W4CCI\nmueORZ55v9WCloI0cX9iSOfQSQHkxFrCMzjmIJ9G9gR61DnWziWYL+FxuLMO\nuBX/e3Aq/+EKr4lOBruiRqzTP3KmKVafxeaSHWjk7siuYeVF8sYZ5IBSsKLU\n8yd4oLBU+DYaV3pF+qMhWtcU0ofT/TPwzdQISI2AdiwEga+IiPWK88c0dAQf\ntrnE5mq+iae8Vy9smkgNvOjytgPN0U/m/FBPjbbUHGkNKiAp1N87LQfTwXDL\nM5bC\r\n=10uj\r\n-----END PGP SIGNATURE-----\r\n"
+  },
+  "gitHead": "5c9e019110229bf92351d2d7c3a024eeb9fd79bb",
+  "homepage": "https://github.com/codetheorist/three-gpu-particle-system#readme",
+  "keywords": [
+    "three",
+    "gpu",
+    "particle",
+    "system",
+    "web",
+    "gl"
+  ],
+  "license": "MIT",
+  "main": "dist/index.js",
+  "maintainers": [
+    {
+      "name": "codetheorist",
+      "email": "codetheorist@gmail.com"
+    }
+  ],
+  "name": "three-gpu-particle-system",
+  "optionalDependencies": {},
+  "readme": "ERROR: No README data found!",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/codetheorist/three-gpu-particle-system.git"
+  },
+  "scripts": {
+    "compile": "gulp build",
+    "prepublish": "npm run compile",
+    "test": "gulp test"
+  },
+  "version": "1.0.0"
+}

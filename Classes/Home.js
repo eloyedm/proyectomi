@@ -19,7 +19,7 @@ class Home {
     })
     $('.options-container .settings.option').click(function(){
       $(that.eventReceiver).trigger('goSettings', {});
-    })
+    })    
   }
 }
 export default Home;

@@ -39,7 +39,8 @@ class Main{
 
     $(generalContainer).on('gameOver', function(e, data){
       var final = new Final(data.score);
-      $('#scene-container').append(final.view())
+      $('#scene-container').append(final.view());
+      final.addSharers();
     })
 
     // document.addEventListener('keydown', function(event){

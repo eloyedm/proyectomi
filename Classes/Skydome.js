@@ -7,7 +7,7 @@ import {
 } from 'three';
 class Skydome {
   constructor() {
-    this.texture = './../images/Erenvidor-heightmap.png';
+    this.texture = './images/Erenvidor-heightmap.png';
   }
   initialize(callback){
     var skyGeo = new SphereGeometry(200, 25, 25);
