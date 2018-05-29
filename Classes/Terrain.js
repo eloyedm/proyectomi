@@ -2,7 +2,8 @@ import {
   PlaneGeometry,
   ImageUtils,
   MeshLambertMaterial,
-  Mesh
+  Mesh,
+  Vector3
 } from 'three';
 import Model from './Model.js';
 
@@ -58,6 +59,17 @@ class Terreno{
       objetoCargado.position.x = 0;
       objetoCargado.position.y = 1;
       objetoCargado.position.z = 0;
+      objetoCargado.vertices = [];
+      var vertice = new Vector3();
+      console.log(objetoCargado);
+      console.log(objetoCargado.children[0]);
+      for (var i = 0; i < objetoCargado.children[0].geometry.attributes.position.array.length; i+=3) {
+        vertice.x = objetoCargado.children[0].geometry.attributes.position.array[i];
+        vertice.y = objetoCargado.children[0].geometry.attributes.position.array[i+1];
+        vertice.z = objetoCargado.children[0].geometry.attributes.position.array[i+2];
+        objetoCargado.vertices.push(vertice.clone());
+      }
+      console.log(objetoCargado);
       // var geometry = new BoxGeometry( 3, 3, 3 );
       // var material = new MeshBasicMaterial( {color: 0xffffff} );
       // var cube = new Mesh( geometry, material );

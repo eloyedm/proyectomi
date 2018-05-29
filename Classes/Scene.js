@@ -20,6 +20,7 @@ import Terreno from './Terrain.js';
 import Player from './Player.js';
 import Pista from './Road.js';
 import Skydome from './Skydome.js';
+import Score from './Score.js';
 const autoBind = require('auto-bind');
 
 class Escena{
@@ -36,7 +37,9 @@ class Escena{
       'S' : false
     };
     this.quality = quality;
+    this.track = '';
     this.collidableMeshes = [];
+    this.score = '';
     autoBind(this);
     this.initialize();
   }
@@ -67,6 +70,8 @@ class Escena{
     });
     var ambiental = new AmbientLight(new Color(1,1,1), 1.0);
     var direccional = new DirectionalLight(new Color(1,1,0), 0.6);
+    var score = new Score();
+    this.score = score;
     direccional.position.set(0,0,1);
     this.scene.add(ambiental);
     this.scene.add(direccional);
@@ -90,6 +95,8 @@ class Escena{
     terreno.buildTrack(function(terrenoCargado){
       // terrenoCargado.scale.set(10,10,10);
       that.scene.add(terrenoCargado);
+      that.track = that.scene.getObjectByName('modeloPista');
+      that.collidableMeshes.push(terrenoCargado.children[0]);
     });
   }
 
@@ -112,7 +119,7 @@ class Escena{
     player1.drawPlayerModel((playerCargado) => {
       // that.camera.position.set(0, 5, -3);
       playerCargado.position.x = -176;
-      playerCargado.position.y = 31;
+      playerCargado.position.y = 41;
       playerCargado.position.z = -10;
       // playerCargado.rotation.y += 90;
       that.scene.add(playerCargado);
@@ -137,8 +144,32 @@ class Escena{
       if(collisionResults.length > 0 && collisionResults[0].distance < directionVector.length() ){
         if(collisionResults[0].object.id == this.collidableMeshes[0].id) {
           this.collidableMeshes.splice(0,1);
+          // mesh.lookAt(this.collidableMeshes[0].position)
+          // mesh.position.y = collisionResults[0].point.y;
           this.removeObjectFromScene(collisionResults[0].object.name);
         }
+        if (collisionResults[0].object.name == 'Road') {
+          console.log("tamos chocando");
+          mesh.position.y = collisionResults[0].point.y;
+          mesh.updateMatrix();
+        }
+      }
+    }
+  }
+
+  keepCarOnTrack(player){
+    var originPoint = this.track.position.clone();
+    for (var vertexIndex = 0; vertexIndex < this.track.vertices.length; vertexIndex++) {
+      var localVertex = this.track.vertices[vertexIndex].clone();
+      var globalVertex = localVertex.applyMatrix4(this.track.matrix);
+      var directionVector = globalVertex.sub(this.track.position);
+
+      var ray = new Raycaster(originPoint, directionVector.clone().normalize());
+      var collidableTracks = [player];
+      var collisionResults = ray.intersectObjects(collidableTracks);
+      if (collisionResults.length > 0 && collisionResults[0].distance < directionVector.length() ) {
+        console.log("aqui pego con el terreno");
+        // player.position.y = collisionResults[0].point.y;
       }
     }
   }
@@ -157,34 +188,43 @@ class Escena{
       var forward2 = 0;
       if (that.keys["A"]) {
         yaw = 5;
-      } else if (that.keys["D"]) {
+      }
+      else if (that.keys["D"]) {
         yaw = -5;
       }
       if (that.keys["W"]) {
         forward = -20;
-      } else if (that.keys["S"]) {
+      }
+      else if (that.keys["S"]) {
         forward = 20;
       }
       if (that.keys["Q"]) {
         height = -5;
-      } else if (that.keys["E"]) {
+      }
+      else if (that.keys["E"]) {
         height = 5;
       }
       if (that.keys['K']) {
         forward2 = 10;
-      } else if (that.keys['I']) {
+      }
+      else if (that.keys['I']) {
         forward2 = -10;
       }
       if (that.keys['J']) {
         yaw2 = 3
-      } else if (that.keys['L']) {
+      }
+      else if (that.keys['L']) {
         yaw2 = -3;
+      }
+      if (that.keys['U']) {
+        $(".general-container").trigger('gameOver', {score: Math.ceil(that.score.total)});
       }
       // console.log(that.keys);
 
       // that.camera.rotklation.y += yaw * deltaTime;
       if (typeof player1 != "undefined") {
         player1.rotation.y += yaw2 * deltaTime;
+        // player1.position.y -= 0.01;
         player1.translateZ(forward2 * deltaTime);
         player1.translateY(height* deltaTime);
         var relativeCameraOffset = new Vector3(0,3,4);
@@ -195,6 +235,7 @@ class Escena{
         that.camera.lookAt(player1.position);
         console.log(player1.position);
         that.checkCollisions(player1);
+        that.keepCarOnTrack(player1);
       }
       if (typeof player2 != "undefined") {
         player2.translateX(forward * deltaTime);
@@ -210,6 +251,7 @@ class Escena{
       if (typeof that.scene != "undefined" && typeof that.camera != "undefined") {
         that.renderer.render(that.scene, that.camera);
       }
+      $("#scoreContainer").text(that.score.view());
     }
     renderinner();
   }
