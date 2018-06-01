@@ -176,13 +176,14 @@ class Escena{
       that.scene.add(playerCargado);
       // that.camera.lookAt(playerCargado.position);
     });
-    player2.drawSecondPLayerModel((playerCargado) => {
-      playerCargado.position.x = -180;
-      playerCargado.position.y = 33;
-      playerCargado.position.z = -10;
-      that.scene.add(playerCargado);
-    });
-
+    if (this.players == 2) {
+      player2.drawSecondPLayerModel((playerCargado) => {
+        playerCargado.position.x = -180;
+        playerCargado.position.y = 33;
+        playerCargado.position.z = -10;
+        that.scene.add(playerCargado);
+      });
+    }
   }
 
   checkCollisions(mesh){
@@ -325,6 +326,7 @@ class Escena{
         // that.keepCarOnTrack(player1);
       }
       if (typeof player2 != "undefined") {
+        console.log(player2);
         player2.translateZ(forward2 * deltaTime);
         player2.rotation.y += yaw2 * deltaTime;
         if (player2.boost > 0) {
