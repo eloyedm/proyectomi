@@ -26,10 +26,12 @@ import Particles from './Particles.js';
 const autoBind = require('auto-bind');
 
 class Escena{
-  constructor(ancho, alto, quality){
+  constructor(ancho, alto, quality, players){
     this.scene = "";
     this.camera  = "";
+    this.cameraMulti = "";
     this.renderer = "";
+    this.rendererMulti = "";
     this.alto = alto;
     this.ancho = ancho;
     this.keys = {
@@ -39,6 +41,7 @@ class Escena{
       'S' : false
     };
     this.quality = quality;
+    this.players = players;
     this.track = '';
     this.collidableMeshes = [];
     this.collidablePowers = [];
@@ -52,16 +55,43 @@ class Escena{
     this.renderer = new WebGLRenderer({
       precision: this.quality
     });
+    if (this.players == 2) {
+      this.rendererMulti = new WebGLRenderer({
+        precision: this.quality
+      })
+    }
     this.renderer.setClearColor(new Color(0,0,0));
-    this.renderer.setSize(this.ancho, this.alto);
+    if (this.players == 1) {
+      this.renderer.setSize(this.ancho, this.alto);
+    }else{
+      this.renderer.setSize(this.ancho/2, this.alto);
+      this.rendererMulti.setSize(this.ancho/2, this.alto);
+    }
+
     this.clock = new Clock();
     var pista = new Pista();
-    this.camera = new PerspectiveCamera(
-      75,
-      this.ancho /this.alto,
-      0.1,
-      300
-    );
+    if (this.players == 1) {
+      this.camera = new PerspectiveCamera(
+        75,
+        this.ancho /this.alto,
+        0.1,
+        300
+      );
+    }
+    else{
+      this.camera = new PerspectiveCamera(
+        75,
+        (this.ancho / 2) /this.alto,
+        0.1,
+        300
+      );
+      this.cameraMulti = new PerspectiveCamera(
+        75,
+        (this.ancho / 2) /this.alto,
+        0.1,
+        300
+      )
+    }
     this.scene = new Scene();
 
     var material = new MeshLambertMaterial({
@@ -84,9 +114,9 @@ class Escena{
     this.scene.add(skydome.initialize());
     var that = this;
     var terreno = new Terreno('./images/Erenvidor-heightmap.png');
-    var grid = new GridHelper(50, 10, 0xffffff, 0xffffff);
-    grid.position.y = -1;
-    this.scene.add(grid);
+    // var grid = new GridHelper(50, 10, 0xffffff, 0xffffff);
+    // grid.position.y = -1;
+    // this.scene.add(grid);
     var powerup = new Powerup();
     var particles = new Particles();
     this.scene.add(particles.particleSystem);
@@ -109,6 +139,9 @@ class Escena{
       that.track = that.scene.getObjectByName('modeloPista');
       that.collidableMeshes.push(terrenoCargado.children[0]);
     });
+    terreno.buildLandscape(function(terrenoCargado){
+      that.scene.add(terrenoCargado);
+    })
     powerup.spheres(function(spheres){
       for (var i = 0; i < spheres.length; i++) {
         that.scene.add(spheres[i]);
@@ -143,10 +176,12 @@ class Escena{
       that.scene.add(playerCargado);
       // that.camera.lookAt(playerCargado.position);
     });
-    // player2.drawSecondPLayerModel((playerCargado) => {
-    //   playerCargado.position.z = 5;
-    //   that.scene.add(playerCargado);
-    // });
+    player2.drawSecondPLayerModel((playerCargado) => {
+      playerCargado.position.x = -180;
+      playerCargado.position.y = 33;
+      playerCargado.position.z = -10;
+      that.scene.add(playerCargado);
+    });
 
   }
 
@@ -209,25 +244,32 @@ class Escena{
       var yaw = 0;
       var forward = 0;
       var height = 0;
+      var height2 = 0;
       var yaw2 = 0;
       var forward2 = 0;
       if (that.keys["A"]) {
-        yaw = 5;
+        yaw = 3;
       }
       else if (that.keys["D"]) {
-        yaw = -5;
+        yaw = -3;
       }
       if (that.keys["W"]) {
-        forward = -20;
+        forward = -10;
       }
       else if (that.keys["S"]) {
-        forward = 20;
+        forward = 10;
       }
       if (that.keys["Q"]) {
         height = -5;
       }
       else if (that.keys["E"]) {
         height = 5;
+      }
+      if (that.keys["O"]) {
+        height2 = -5;
+      }
+      else if (that.keys["U"]) {
+        height2 = 5;
       }
       if (that.keys['K']) {
         forward2 = 10;
@@ -241,7 +283,7 @@ class Escena{
       else if (that.keys['L']) {
         yaw2 = -3;
       }
-      if (that.keys['U']) {
+      if (that.keys['T']) {
         // cancelAnimationFrame(this.id);
         cancelAnimationFrame(request);
         $("#scene-container").empty();
@@ -251,13 +293,13 @@ class Escena{
 
       // that.camera.rotklation.y += yaw * deltaTime;
       if (typeof player1 != "undefined") {
-        player1.rotation.y += yaw2 * deltaTime;
+        player1.rotation.y += yaw * deltaTime;
         // player1.position.y -= 0.01;
         if (player1.boost > 0) {
           player1.boost -= deltaTime;
           forward2 *= 2;
         }
-        player1.translateZ(forward2 * deltaTime);
+        player1.translateZ(forward * deltaTime);
         player1.translateY(height* deltaTime);
         var relativeCameraOffset = new Vector3(0,2,3);
         var cameraOffset = relativeCameraOffset.applyMatrix4( player1.matrixWorld );
@@ -283,8 +325,25 @@ class Escena{
         // that.keepCarOnTrack(player1);
       }
       if (typeof player2 != "undefined") {
-        player2.translateX(forward * deltaTime);
-        player2.rotation.y += yaw * deltaTime;
+        player2.translateZ(forward2 * deltaTime);
+        player2.rotation.y += yaw2 * deltaTime;
+        if (player2.boost > 0) {
+          player2.boost -= deltaTime;
+          forward *= 2;
+        }
+        player2.translateY(height2* deltaTime);
+        var relativeCameraOffset = new Vector3(0,2,3);
+        var cameraOffset = relativeCameraOffset.applyMatrix4( player2.matrixWorld );
+        that.cameraMulti.position.x = cameraOffset.x;
+        that.cameraMulti.position.y = cameraOffset.y;
+        that.cameraMulti.position.z = cameraOffset.z;
+        that.cameraMulti.lookAt(player2.position);
+        that.checkCollisions(player2);
+        if (that.collidableMeshes.length == 0) {
+          cancelAnimationFrame(request);
+          $("#scene-container").empty();
+          $(".general-container").trigger('gameOver', {score: that.score.view()});
+        }
       }
 
 
@@ -295,6 +354,9 @@ class Escena{
       // that.camera.lookAt(player1.position);
       if (typeof that.scene != "undefined" && typeof that.camera != "undefined") {
         that.renderer.render(that.scene, that.camera);
+        if (that.players == 2) {
+          that.rendererMulti.render(that.scene, that.cameraMulti);
+        }
       }
       $("#scoreContainer").text(that.score.view());
     }
@@ -308,6 +370,9 @@ class Escena{
 
   draw(container){
     container.append(this.renderer.domElement)
+    if (this.players == 2) {
+      container.append(this.rendererMulti.domElement);
+    }
     this.render();
   }
 }

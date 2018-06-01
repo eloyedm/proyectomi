@@ -115,6 +115,7 @@
   /* background-color: #08224c; */
   height: 100%;
   width: 100%;
+  display: flex;
 }
 
 #scene-container #scoreContainer{

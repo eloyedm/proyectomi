@@ -77,6 +77,31 @@ class Terreno{
       callback(objetoCargado);
     })
   }
+  buildLandscape(callback){
+    var tackModel = new Model('./Models/', 'TrackTerrain.obj', 'TrackTerrain.mtl');
+    tackModel.loadModel((objetoCargado) => {
+      objetoCargado.name = 'modeloPaisaje';
+      objetoCargado.position.x = 0;
+      objetoCargado.position.y = 1;
+      objetoCargado.position.z = 0;
+      objetoCargado.vertices = [];
+      var vertice = new Vector3();
+      for (var i = 0; i < objetoCargado.children[0].geometry.attributes.position.array.length; i+=3) {
+        vertice.x = objetoCargado.children[0].geometry.attributes.position.array[i];
+        vertice.y = objetoCargado.children[0].geometry.attributes.position.array[i+1];
+        vertice.z = objetoCargado.children[0].geometry.attributes.position.array[i+2];
+        objetoCargado.vertices.push(vertice.clone());
+      }
+      // var geometry = new BoxGeometry( 3, 3, 3 );
+      // var material = new MeshBasicMaterial( {color: 0xffffff} );
+      // var cube = new Mesh( geometry, material );
+      // cube.position.x = 0;
+      // cube.position.y = 0;
+      // cube.position.z = 0;
+      // objetoCargado.add(cube);
+      callback(objetoCargado);
+    })
+  }
 }
 
 export default Terreno;

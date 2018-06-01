@@ -26,7 +26,7 @@ class Main{
       $('.'+settings.container).hide();
     });
     $(generalContainer).on('letsPlay', function(){
-      var scene = new Escena(window.innerWidth, window.innerHeight, settings.resolution);
+      var scene = new Escena(window.innerWidth, window.innerHeight, settings.resolution, 1);
       var score = $('<div />', {
         id: "scoreContainer"
       });
@@ -36,7 +36,14 @@ class Main{
       scene.draw($('#scene-container'));
       $('#scene-container').append(score);
     });
-
+    $(generalContainer).on('letsPlayTogether', function(){
+      var scene = new Escena(window.innerWidth, window.innerHeight, settings.resolution, 2);
+      document.addEventListener('keydown', scene.keyDown);
+      document.addEventListener('keyup', scene.keyUp);
+      $(generalContainer).hide();
+      scene.draw($('#scene-container'));
+      $('#scene-container').append(score);
+    })
     $(generalContainer).on('gameOver', function(e, data){
       var final = new Final(data.score);
       $('#scene-container').append(final.view());
