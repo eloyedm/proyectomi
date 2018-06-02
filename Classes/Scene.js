@@ -3,6 +3,7 @@ import {Scene,
   PerspectiveCamera,
   WebGLRenderer,
   BoxGeometry,
+  Geometry,
   Mesh,
   Math,
   MeshLambertMaterial,
@@ -22,7 +23,7 @@ import Pista from './Road.js';
 import Skydome from './Skydome.js';
 import Score from './Score.js';
 import Powerup from './Powerup.js';
-import Particles from './Particles.js';
+// import Particles from './Particles.js';
 const autoBind = require('auto-bind');
 
 class Escena{
@@ -118,10 +119,10 @@ class Escena{
     // grid.position.y = -1;
     // this.scene.add(grid);
     var powerup = new Powerup();
-    var particles = new Particles();
-    this.scene.add(particles.particleSystem);
-    this.particles = particles;
-    console.log(this.particles);
+    // var particles = new Particles();
+    // this.scene.add(particles.particleSystem);
+    // this.particles = particles;
+    // console.log(this.particles);
     // terreno.initialize(function(plane){
     //   that.scene.add(plane);
     // });
@@ -138,6 +139,8 @@ class Escena{
       that.scene.add(terrenoCargado);
       that.track = that.scene.getObjectByName('modeloPista');
       that.collidableMeshes.push(terrenoCargado.children[0]);
+      that.collidableMeshes.push(terrenoCargado.children[1]);
+      console.log(terrenoCargado);
     });
     terreno.buildLandscape(function(terrenoCargado){
       that.scene.add(terrenoCargado);
@@ -208,6 +211,9 @@ class Escena{
         //   mesh.updateMatrix();
         // }
       }
+      if (collisionResults.length > 0) {
+        mesh.position.y = collisionResults[0].point.y;
+      }
       collisionResults = ray.intersectObjects(this.collidablePowers);
       if (collisionResults.length > 0 && collisionResults[0].distance < directionVector.length() ) {
         mesh.boost = 7;
@@ -221,7 +227,6 @@ class Escena{
       var localVertex = this.track.vertices[vertexIndex].clone();
       var globalVertex = localVertex.applyMatrix4(this.track.matrix);
       var directionVector = globalVertex.sub(this.track.position);
-
       var ray = new Raycaster(originPoint, directionVector.clone().normalize());
       var collidableTracks = [player];
       var collisionResults = ray.intersectObjects(collidableTracks);
@@ -235,13 +240,14 @@ class Escena{
 
   render(){
     var that = this;
+    console.log(this.collidableMeshes);
     function renderinner(){
       var request = requestAnimationFrame(renderinner);
       var player1 = that.scene.getObjectByName('modeloPlayer');
       var player2 = that.scene.getObjectByName('modeloPlayer2');
       var deltaTime = that.clock.getDelta();
-      var deltaParticles = that.clock.getDelta() * that.particles.spawnerOptions.timeScale;
-      that.tick += deltaParticles;
+      // var deltaParticles = that.clock.getDelta() * that.particles.spawnerOptions.timeScale;
+      // that.tick += deltaParticles;
       var yaw = 0;
       var forward = 0;
       var height = 0;
@@ -308,15 +314,15 @@ class Escena{
         that.camera.position.y = cameraOffset.y;
         that.camera.position.z = cameraOffset.z;
         that.camera.lookAt(player1.position);
-        if (deltaParticles > 0) {
-          that.particles.options.position.x = player1.position.x;
-          that.particles.options.position.y = player1.position.y;
-          that.particles.options.position.z = player1.position.z;
-          for (var x = 0; x < that.particles.spawnerOptions.spawnRate; x++) {
+        // if (deltaParticles > 0) {
+        //   that.particles.options.position.x = player1.position.x;
+        //   that.particles.options.position.y = player1.position.y;
+        //   that.particles.options.position.z = player1.position.z;
+        //   for (var x = 0; x < that.particles.spawnerOptions.spawnRate; x++) {
             // that.particles.particleSystem.spawnParticle(that.particles.options);
-          }
-        }
-        that.particles.particleSystem.update(that.tick);
+        //   }
+        // }
+        // that.particles.particleSystem.update(that.tick);
         that.checkCollisions(player1);
         if (that.collidableMeshes.length == 0) {
           cancelAnimationFrame(request);
@@ -326,7 +332,6 @@ class Escena{
         // that.keepCarOnTrack(player1);
       }
       if (typeof player2 != "undefined") {
-        console.log(player2);
         player2.translateZ(forward2 * deltaTime);
         player2.rotation.y += yaw2 * deltaTime;
         if (player2.boost > 0) {

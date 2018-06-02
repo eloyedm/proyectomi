@@ -1,5 +1,6 @@
 import * as THREE from 'three';
-import GPUps from './../node_modules/three-gpu-particle-system/src/index.js';
+import { ParticleSystem } from 'three-gpu-particle-system';
+// import Particles as ParticleSystem from 'threejs-particle-shader';
 class Particles {
   constructor() {
     this.particleSystem = '';
@@ -22,10 +23,12 @@ class Particles {
       verticalSpeed: 1.35,
       timeScale: 1
     };
-    GPUps(THREE);
-    this.particleSystem = new THREE.GPUParticleSystem({
-      maxParticles: 10000
-    });
+    // GPUps(THREE);
+    // this.particleSystem = new THREE.GPUParticleSystem({
+    //   maxParticles: 10000
+    // });
+
+    console.log(typeof GPUps);
   }
 }
 export default Particles;

@@ -21,8 +21,9 @@ class Model{
       //nos va a devolver un parametro cuando termine
       var objLoader = new THREE.OBJLoader();
       objLoader.setPath(that.path);
+      material.side = THREE.DoubleSided
       objLoader.setMaterials(material);
-      objLoader.load(this.objFile, (objCargado)=> {
+      objLoader.load(this.objFile, (objCargado)=> {        
       //Este bloque de codigo solo se ejecuta cuando termine la carga del OBJ
       callback(objCargado);
       });

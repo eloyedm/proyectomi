@@ -3,7 +3,8 @@ import {
   ImageUtils,
   MeshLambertMaterial,
   Mesh,
-  Vector3
+  Vector3,
+  DoubleSided,
 } from 'three';
 import Model from './Model.js';
 
@@ -60,6 +61,7 @@ class Terreno{
       objetoCargado.position.y = 1;
       objetoCargado.position.z = 0;
       objetoCargado.vertices = [];
+      objetoCargado.children[0].material.side = DoubleSided;
       var vertice = new Vector3();
       for (var i = 0; i < objetoCargado.children[0].geometry.attributes.position.array.length; i+=3) {
         vertice.x = objetoCargado.children[0].geometry.attributes.position.array[i];
@@ -85,6 +87,7 @@ class Terreno{
       objetoCargado.position.y = 1;
       objetoCargado.position.z = 0;
       objetoCargado.vertices = [];
+
       var vertice = new Vector3();
       for (var i = 0; i < objetoCargado.children[0].geometry.attributes.position.array.length; i+=3) {
         vertice.x = objetoCargado.children[0].geometry.attributes.position.array[i];
