@@ -23,7 +23,7 @@ import Pista from './Road.js';
 import Skydome from './Skydome.js';
 import Score from './Score.js';
 import Powerup from './Powerup.js';
-// import Particles from './Particles.js';
+import Particles from './Particles.js';
 const autoBind = require('auto-bind');
 
 class Escena{
@@ -47,7 +47,7 @@ class Escena{
     this.collidableMeshes = [];
     this.collidablePowers = [];
     this.score = '';
-    this.particles = '';
+    this.particleEmitter = '';
     this.tick = 0;
     autoBind(this);
     this.initialize();
@@ -119,8 +119,10 @@ class Escena{
     // grid.position.y = -1;
     // this.scene.add(grid);
     var powerup = new Powerup();
-    // var particles = new Particles();
-    // this.scene.add(particles.particleSystem);
+    var particles = new Particles();
+    this.particleEmitter = particles.setUp(this.camera, this.alto);
+    this.particleEmitter.position.set(-176,33,-10);
+    this.scene.add(this.particleEmitter);
     // this.particles = particles;
     // console.log(this.particles);
     // terreno.initialize(function(plane){
@@ -140,7 +142,6 @@ class Escena{
       that.track = that.scene.getObjectByName('modeloPista');
       that.collidableMeshes.push(terrenoCargado.children[0]);
       that.collidableMeshes.push(terrenoCargado.children[1]);
-      console.log(terrenoCargado);
     });
     terreno.buildLandscape(function(terrenoCargado){
       that.scene.add(terrenoCargado);
@@ -211,12 +212,13 @@ class Escena{
         //   mesh.updateMatrix();
         // }
       }
-      if (collisionResults.length > 0) {
-        mesh.position.y = collisionResults[0].point.y;
-      }
+      // if (collisionResults.length > 0) {
+      //   console.log(collisionResults[0]);
+      //   mesh.position.y = collisionResults[0].point.y;
+      // }
       collisionResults = ray.intersectObjects(this.collidablePowers);
       if (collisionResults.length > 0 && collisionResults[0].distance < directionVector.length() ) {
-        mesh.boost = 7;
+        mesh.boost = 10;
       }
     }
   }
@@ -240,7 +242,6 @@ class Escena{
 
   render(){
     var that = this;
-    console.log(this.collidableMeshes);
     function renderinner(){
       var request = requestAnimationFrame(renderinner);
       var player1 = that.scene.getObjectByName('modeloPlayer');
@@ -304,7 +305,7 @@ class Escena{
         // player1.position.y -= 0.01;
         if (player1.boost > 0) {
           player1.boost -= deltaTime;
-          forward2 *= 2;
+          forward *= 2;
         }
         player1.translateZ(forward * deltaTime);
         player1.translateY(height* deltaTime);
@@ -314,6 +315,7 @@ class Escena{
         that.camera.position.y = cameraOffset.y;
         that.camera.position.z = cameraOffset.z;
         that.camera.lookAt(player1.position);
+        // that.particleEmitter.position.set(player1.position);
         // if (deltaParticles > 0) {
         //   that.particles.options.position.x = player1.position.x;
         //   that.particles.options.position.y = player1.position.y;
@@ -366,6 +368,9 @@ class Escena{
         }
       }
       $("#scoreContainer").text(that.score.view());
+      that.particleEmitter.position.set(player1.position.x, player1.position.y, player1.position.z);
+      that.particleEmitter.visible = (player1.boost > 0) ? true : false;
+      that.particleEmitter.material.update(deltaTime);
     }
     renderinner();
   }
