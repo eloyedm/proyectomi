@@ -16,7 +16,7 @@ class Pista{
     $.ajax({
       url: "./JSON/road.json",
       success: function(data){
-        var geometry = new BoxGeometry( 2, 2, 2 );
+        var geometry = new BoxGeometry( 4, 2, 2 );
         var material = new MeshBasicMaterial( {color: 0xfff} );
         var boxes = [];
         for (var i = 0; i < data.length; i++) {

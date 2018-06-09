@@ -173,7 +173,7 @@ class Escena{
     player1.drawPlayerModel((playerCargado) => {
       // that.camera.position.set(0, 5, -3);
       playerCargado.position.x = -176;
-      playerCargado.position.y = 33;
+      playerCargado.position.y = 35.9;
       playerCargado.position.z = -10;
       // playerCargado.boost = 5;
       // playerCargado.rotation.y += 90;
@@ -301,13 +301,15 @@ class Escena{
 
       // that.camera.rotklation.y += yaw * deltaTime;
       if (typeof player1 != "undefined") {
-        player1.rotation.y += yaw * deltaTime;
         // player1.position.y -= 0.01;
         if (player1.boost > 0) {
           player1.boost -= deltaTime;
           forward *= 2;
         }
         player1.translateZ(forward * deltaTime);
+        if (forward != 0) {
+          player1.rotation.y += yaw * deltaTime;
+        }
         player1.translateY(height* deltaTime);
         var relativeCameraOffset = new Vector3(0,2,3);
         var cameraOffset = relativeCameraOffset.applyMatrix4( player1.matrixWorld );
@@ -315,6 +317,7 @@ class Escena{
         that.camera.position.y = cameraOffset.y;
         that.camera.position.z = cameraOffset.z;
         that.camera.lookAt(player1.position);
+        console.log(player1.position);
         // that.particleEmitter.position.set(player1.position);
         // if (deltaParticles > 0) {
         //   that.particles.options.position.x = player1.position.x;
