@@ -84,7 +84,7 @@ class Terreno{
     tackModel.loadModel((objetoCargado) => {
       objetoCargado.name = 'modeloPaisaje';
       objetoCargado.position.x = 0;
-      objetoCargado.position.y = 1;
+      objetoCargado.position.y = 10;
       objetoCargado.position.z = 0;
       objetoCargado.vertices = [];
 

@@ -140,8 +140,8 @@ class Escena{
       // terrenoCargado.scale.set(10,10,10);
       that.scene.add(terrenoCargado);
       that.track = that.scene.getObjectByName('modeloPista');
-      that.collidableMeshes.push(terrenoCargado.children[0]);
-      that.collidableMeshes.push(terrenoCargado.children[1]);
+      // that.collidableMeshes.push(terrenoCargado.children[0]);
+      // that.collidableMeshes.push(terrenoCargado.children[1]);
     });
     terreno.buildLandscape(function(terrenoCargado){
       that.scene.add(terrenoCargado);
@@ -173,7 +173,7 @@ class Escena{
     player1.drawPlayerModel((playerCargado) => {
       // that.camera.position.set(0, 5, -3);
       playerCargado.position.x = -176;
-      playerCargado.position.y = 35.9;
+      playerCargado.position.y = 58.9;
       playerCargado.position.z = -10;
       // playerCargado.boost = 5;
       // playerCargado.rotation.y += 90;
@@ -183,7 +183,7 @@ class Escena{
     if (this.players == 2) {
       player2.drawSecondPLayerModel((playerCargado) => {
         playerCargado.position.x = -180;
-        playerCargado.position.y = 33;
+        playerCargado.position.y = 57.9;
         playerCargado.position.z = -10;
         that.scene.add(playerCargado);
       });
@@ -192,6 +192,7 @@ class Escena{
 
   checkCollisions(mesh){
     var originPoint = mesh.position.clone();
+    var trackArray = [this.track.children[0], this.track.children[1]];
     for (var vertexIndex = 0; vertexIndex < mesh.children.length; vertexIndex++) {
       var localVertex = mesh.children[vertexIndex].clone();
       var globalVertex = localVertex.position.applyMatrix4(mesh.matrix);
@@ -212,10 +213,11 @@ class Escena{
         //   mesh.updateMatrix();
         // }
       }
-      // if (collisionResults.length > 0) {
-      //   console.log(collisionResults[0]);
-      //   mesh.position.y = collisionResults[0].point.y;
-      // }
+      collisionResults = ray.intersectObjects(trackArray);
+      if (collisionResults.length > 0 && collisionResults[0].distance < 8) {
+        mesh.falling = true;
+        // mesh.position.y = collisionResults[0].point.y;
+      }
       collisionResults = ray.intersectObjects(this.collidablePowers);
       if (collisionResults.length > 0 && collisionResults[0].distance < directionVector.length() ) {
         mesh.boost = 10;
@@ -233,7 +235,6 @@ class Escena{
       var collidableTracks = [player];
       var collisionResults = ray.intersectObjects(collidableTracks);
       if (collisionResults.length > 0 && collisionResults[0].distance < directionVector.length() ) {
-        console.log("aqui pego con el terreno");
         // player.position.y = collisionResults[0].point.y;
       }
 
@@ -297,7 +298,6 @@ class Escena{
         $("#scene-container").empty();
         $(".general-container").trigger('gameOver', {score: that.score.view()});
       }
-      // console.log(that.keys);
 
       // that.camera.rotklation.y += yaw * deltaTime;
       if (typeof player1 != "undefined") {
@@ -311,13 +311,14 @@ class Escena{
           player1.rotation.y += yaw * deltaTime;
         }
         player1.translateY(height* deltaTime);
+        console.log(player1.position);
         var relativeCameraOffset = new Vector3(0,2,3);
         var cameraOffset = relativeCameraOffset.applyMatrix4( player1.matrixWorld );
         that.camera.position.x = cameraOffset.x;
         that.camera.position.y = cameraOffset.y;
         that.camera.position.z = cameraOffset.z;
         that.camera.lookAt(player1.position);
-        console.log(player1.position);
+        // console.log(player1.position);
         // that.particleEmitter.position.set(player1.position);
         // if (deltaParticles > 0) {
         //   that.particles.options.position.x = player1.position.x;
@@ -329,11 +330,22 @@ class Escena{
         // }
         // that.particles.particleSystem.update(that.tick);
         that.checkCollisions(player1);
+        if (player1.falling == true) {
+          player1.position.y -= 1;
+        }
         if (that.collidableMeshes.length == 0) {
           cancelAnimationFrame(request);
           $("#scene-container").empty();
           $(".general-container").trigger('gameOver', {score: that.score.view()});
         }
+        if (player1.position.y <= 10) {
+          cancelAnimationFrame(request);
+          $('#scene-container').empty();
+          $(".general-container").trigger('gameOver', {score: that.score.loser()})
+        }
+        that.particleEmitter.position.set(player1.position.x, player1.position.y, player1.position.z);
+        that.particleEmitter.visible = (player1.boost > 0) ? true : false;
+        that.particleEmitter.material.update(deltaTime);
         // that.keepCarOnTrack(player1);
       }
       if (typeof player2 != "undefined") {
@@ -371,9 +383,6 @@ class Escena{
         }
       }
       $("#scoreContainer").text(that.score.view());
-      that.particleEmitter.position.set(player1.position.x, player1.position.y, player1.position.z);
-      that.particleEmitter.visible = (player1.boost > 0) ? true : false;
-      that.particleEmitter.material.update(deltaTime);
     }
     renderinner();
   }

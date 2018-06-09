@@ -19,7 +19,8 @@ class Player{
       objetoCargado.name = 'modeloPlayer';
       objetoCargado.position.x = 0;
       objetoCargado.position.y = 1;
-      objetoCargado.position.z = 0;      
+      objetoCargado.position.z = 0;
+      objetoCargado.falling = false;
       // var geometry = new BoxGeometry( 3, 3, 3 );
       // var material = new MeshBasicMaterial( {color: 0xffffff} );
       // var cube = new Mesh( geometry, material );

@@ -10,6 +10,10 @@ class Score {
     this.total = this.total <= 0 ? 0 : this.total - this.clock.getElapsedTime() / 50;
     return Math.ceil(this.total);
   }
+  loser(){
+    this.total = 0;
+    return Math.ceil(this.total);
+  }
 }
 
 export default Score;

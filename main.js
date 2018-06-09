@@ -33,6 +33,7 @@ class Main{
       document.addEventListener('keydown', scene.keyDown);
       document.addEventListener('keyup', scene.keyUp);
       $(generalContainer).hide();
+
       scene.draw($('#scene-container'));
       $('#scene-container').append(score);
     });

@@ -28,7 +28,6 @@ class Final {
   }
 
   addSharers(){
-    console.log(VanillaSharing);
     $(".twitter-share").click(function(){
       VanillaSharing.tw({
         url: window.location.href,
