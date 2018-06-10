@@ -20,6 +20,10 @@ class Home {
         '<div class="arrow-right"></div>'+
         '<span>Multiplayer</span>'+
       '</div>'+
+      '<div class="high option">'+
+        '<div class="arrow-right"></div>'+
+        '<span>Highcores</span>'+
+      '</div>'+
       '<div class="settings option">'+
         '<div class="arrow-right"></div>'+
         '<span>Settings</span>'+
@@ -42,6 +46,9 @@ class Home {
     });
     $('.options-container .settings.option').click(function(){
       $(that.eventReceiver).trigger('goSettings', {});
+    })
+    $('.options-container .high.option').click(function(){
+      $(that.eventReceiver).trigger('goHighscores', {});
     })
   }
 }

@@ -3,6 +3,8 @@ import Escena from './Classes/Scene.js';
 import Settings from './Classes/settings.js';
 import Home from './Classes/Home.js';
 import Final from './Classes/Final.js';
+import Highscores from './Classes/Highscores.js';
+import Start from './Classes/Start.js';
 
 class Main{
   constructor() {
@@ -11,12 +13,17 @@ class Main{
   initialize(){
     var container = $("#scene-container");
     var generalContainer = $(".general-container");
+    var start = new Start();
     var settings = new Settings();
+    var highscores = new Highscores();
     var home = new Home;
+    generalContainer.append(start.view());
     generalContainer.append(home.view());
     generalContainer.append(settings.view());
+    generalContainer.append(highscores.view());
     home.events();
     settings.events();
+    highscores.events();
     $(generalContainer).on('goSettings', function(){
       $('.'+home.container).hide();
       $('.'+settings.container).show();
@@ -24,6 +31,14 @@ class Main{
     $(generalContainer).on('goHome', function(){
       $('.'+home.container).show();
       $('.'+settings.container).hide();
+    });
+    $(generalContainer).on('goHomeFH', function(){
+      $('.'+home.container).show();
+      $('.'+highscores.container).hide();
+    });
+    $(generalContainer).on('goHighscores', function(){
+      $('.'+home.container).hide();
+      $('.'+highscores.container).show();
     });
     $(generalContainer).on('letsPlay', function(){
       var scene = new Escena(window.innerWidth, window.innerHeight, settings.resolution, 1);
