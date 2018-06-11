@@ -13,12 +13,11 @@ class Start {
     '<input id="nickname" type="text" />'+
     '<button type="button">Enviar</button>'+
     '</div>';
-    this.events();
     return this.domElement;
   }
   events(){
     var that = this;
-    var sendButton = this.container+' button';
+    var sendButton = '.'+this.container+' button';
     $(sendButton).click(function(){
       var nickName = $("#nickname").val();
       $.ajax({
@@ -29,7 +28,8 @@ class Start {
           name: nickName
         },
         success: function(){
-          window.localStorage.setItem('playerName', nickName);
+          console.log("este ya estaba");
+          localStorage.setItem('playerName', nickName);
           $(that.eventReceiver).trigger('goHomeStart', {});
         }
       });

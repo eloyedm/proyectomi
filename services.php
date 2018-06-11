@@ -26,7 +26,7 @@
         echo json_encode($result);
       }
       else {
-        echo "ya existia";
+        echo json_encode("ya existia");
       }
       break;
     default:

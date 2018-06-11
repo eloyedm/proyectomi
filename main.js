@@ -16,9 +16,15 @@ class Main{
     var start = new Start();
     var settings = new Settings();
     var highscores = new Highscores();
-    var home = new Home;
-    generalContainer.append(start.view());
+    var home = new Home();
     generalContainer.append(home.view());
+    if (localStorage.getItem('playerName') == null) {
+      generalContainer.append(start.view());
+      start.events();
+    }
+    else {
+      $('.'+home.container).show();
+    }
     generalContainer.append(settings.view());
     generalContainer.append(highscores.view());
     home.events();
@@ -31,6 +37,10 @@ class Main{
     $(generalContainer).on('goHome', function(){
       $('.'+home.container).show();
       $('.'+settings.container).hide();
+    });
+    $(generalContainer).on('goHomeStart', function(){
+      $('.'+home.container).show();
+      $('.'+start.container).hide();
     });
     $(generalContainer).on('goHomeFH', function(){
       $('.'+home.container).show();
