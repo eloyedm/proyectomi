@@ -21,6 +21,7 @@ class Player{
       objetoCargado.position.y = 1;
       objetoCargado.position.z = 0;
       objetoCargado.falling = false;
+      callback(objetoCargado);
       // var geometry = new BoxGeometry( 3, 3, 3 );
       // var material = new MeshBasicMaterial( {color: 0xffffff} );
       // var cube = new Mesh( geometry, material );
@@ -28,7 +29,6 @@ class Player{
       // cube.position.y = 0;
       // cube.position.z = 0;
       // objetoCargado.add(cube);
-      callback(objetoCargado);
     })
   }
 

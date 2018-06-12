@@ -33,12 +33,13 @@ class Powerup {
     var spheres = [];
     $.ajax({
       url: "./JSON/objects.json",
-      success: function(data){        
+      success: function(data){
         for (var i = 0; i < data.length; i++) {
           var instanceSphere = sphere.clone();
           instanceSphere.position.x = data[i].x;
           instanceSphere.position.y = data[i].y;
           instanceSphere.position.z = data[i].z;
+          instanceSphere.name = data[i].name;
           spheres.push(instanceSphere);
         }
         callback(spheres);

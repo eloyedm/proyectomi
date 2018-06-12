@@ -24,6 +24,7 @@ import Skydome from './Skydome.js';
 import Score from './Score.js';
 import Powerup from './Powerup.js';
 import Particles from './Particles.js';
+import Model from './Model.js';
 const autoBind = require('auto-bind');
 
 class Escena{
@@ -188,6 +189,14 @@ class Escena{
         that.scene.add(playerCargado);
       });
     }
+    var arrowModel = new Model('./Models/', 'Arrow.obj', 'Arrow.mtl');
+    arrowModel.loadModel((flechaCargada) => {
+      flechaCargada.position.x = -176;
+      flechaCargada.position.y = 58.9;
+      flechaCargada.position.z = -10;
+      flechaCargada.name = 'arrowP1';
+      that.scene.add(flechaCargada);
+    });
   }
 
   checkCollisions(mesh){
@@ -311,7 +320,6 @@ class Escena{
           player1.rotation.y += yaw * deltaTime;
         }
         player1.translateY(height* deltaTime);
-        console.log(player1.position);
         var relativeCameraOffset = new Vector3(0,2,3);
         var cameraOffset = relativeCameraOffset.applyMatrix4( player1.matrixWorld );
         that.camera.position.x = cameraOffset.x;
@@ -330,6 +338,17 @@ class Escena{
         // }
         // that.particles.particleSystem.update(that.tick);
         that.checkCollisions(player1);
+        var arrowP1 = that.scene.getObjectByName('arrowP1');
+        arrowP1.lookAt(that.collidableMeshes[0].position);
+        // arrowP1.rotation.x = 0;
+        // arrowP1.rotation.z = 0;
+        arrowP1.rotation.y *= -1;
+        var relativeArrowOffset = new Vector3(0,2,0);
+        var arrowOffset = relativeArrowOffset.applyMatrix4( player1.matrixWorld );
+        arrowP1.position.x = arrowOffset.x;
+        arrowP1.position.y = arrowOffset.y;
+        arrowP1.position.z = arrowOffset.z;
+        console.log(that.collidableMeshes[0]);
         if (player1.falling == true) {
           player1.position.y -= 1;
         }
@@ -376,6 +395,10 @@ class Escena{
       // that.camera.position.y  = player1.position.y + 2;
       // that.camera.translateY(height * deltaTime);
       // that.camera.lookAt(player1.position);
+      for (var i = 1; i <= that.collidablePowers.length; i++) {
+        var power = that.scene.getObjectByName('power'+i);
+        power.rotation.y += deltaTime;
+      }
       if (typeof that.scene != "undefined" && typeof that.camera != "undefined") {
         that.renderer.render(that.scene, that.camera);
         if (that.players == 2) {
