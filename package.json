@@ -25,6 +25,7 @@
     "shader-particle-engine": "git+https://github.com/squarefeet/ShaderParticleEngine.git",
     "social-share-js": "^1.0.4",
     "three": "^0.91.0",
+    "three-addons": "^1.2.0",
     "three-effectcomposer-es6": "0.0.4",
     "three-gpu-particle-system": "git+https://github.com/fazeaction/three-gpu-particle-system.git",
     "three-mtl-loader": "^1.0.2",

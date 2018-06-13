@@ -25,9 +25,9 @@ import Score from './Score.js';
 import Powerup from './Powerup.js';
 import Particles from './Particles.js';
 import Model from './Model.js';
-import EffectComposer, { RenderPass, ShaderPass, CopyShader, DotScreenShader } from 'three-effectcomposer-es6';
+import EffectComposer, { RenderPass, ShaderPass, CopyShader } from 'three-effectcomposer-es6';
+import { RGBShiftShader, DotScreenShader } from 'three-addons';
 const autoBind = require('auto-bind');
-
 class Escena{
   constructor(ancho, alto, quality, players){
     this.scene = "";
@@ -35,6 +35,7 @@ class Escena{
     this.cameraMulti = "";
     this.renderer = "";
     this.rendererMulti = "";
+    this.blured = false;
     this.alto = alto;
     this.ancho = ancho;
     this.keys = {
@@ -150,11 +151,18 @@ class Escena{
     //
     // var effect = new ShaderPass( DotScreenShader );
     // effect.uniforms('scale').value = 4;
-    // this.composer.addPass(effect);
-    const copyPass = new ShaderPass(CopyShader);
-    copyPass.renderToScreen = true
-    this.composer.addPass(copyPass);
+    // // this.composer.addPass(effect);
+    // const copyPass = new ShaderPass(CopyShader);
+    // copyPass.renderToScreen = true
+    // this.composer.addPass(copyPass);
 
+    var effect = new ShaderPass( DotScreenShader );
+		effect.uniforms[ 'scale' ].value = 7;
+		this.composer.addPass( effect );
+    effect = new ShaderPass( RGBShiftShader );
+		effect.uniforms[ 'amount' ].value = 0.0015;
+		effect.renderToScreen = true;
+		this.composer.addPass( effect );
   }
 
   addObjectToScene(object){
@@ -231,7 +239,7 @@ class Escena{
       }
       collisionResults = ray.intersectObjects(this.collidablePowers);
       if (collisionResults.length > 0 && collisionResults[0].distance < directionVector.length() ) {
-        mesh.boost = 10;
+        mesh.boost = 8;
       }
     }
   }
@@ -252,164 +260,168 @@ class Escena{
     }
   }
 
-  render(){
+  animate(){
     var that = this;
-    function renderinner(){
-      var request = requestAnimationFrame(renderinner);
-      var player1 = that.scene.getObjectByName('modeloPlayer');
-      var player2 = that.scene.getObjectByName('modeloPlayer2');
-      var deltaTime = that.clock.getDelta();
-      // var deltaParticles = that.clock.getDelta() * that.particles.spawnerOptions.timeScale;
-      // that.tick += deltaParticles;
-      var yaw = 0;
-      var forward = 0;
-      var height = 0;
-      var height2 = 0;
-      var yaw2 = 0;
-      var forward2 = 0;
-      if (that.keys["A"]) {
-        yaw = 3;
-      }
-      else if (that.keys["D"]) {
-        yaw = -3;
-      }
-      if (that.keys["W"]) {
-        forward = -10;
-      }
-      else if (that.keys["S"]) {
-        forward = 10;
-      }
-      if (that.keys["Q"]) {
-        height = -5;
-      }
-      else if (that.keys["E"]) {
-        height = 5;
-      }
-      if (that.keys["O"]) {
-        height2 = -5;
-      }
-      else if (that.keys["U"]) {
-        height2 = 5;
-      }
-      if (that.keys['K']) {
-        forward2 = 10;
-      }
-      else if (that.keys['I']) {
-        forward2 = -10;
-      }
-      if (that.keys['J']) {
-        yaw2 = 3
-      }
-      else if (that.keys['L']) {
-        yaw2 = -3;
-      }
-      if (that.keys['T']) {
-        // cancelAnimationFrame(this.id);
-        cancelAnimationFrame(request);
-        $("#scene-container").empty();
-        $(".general-container").trigger('gameOver', {score: that.score.view()});
-      }
 
-      // that.camera.rotklation.y += yaw * deltaTime;
-      if (typeof player1 != "undefined") {
-        // player1.position.y -= 0.01;
-        if (player1.boost > 0) {
-          player1.boost -= deltaTime;
-          forward *= 2;
-        }
-        player1.translateZ(forward * deltaTime);
-        if (forward != 0) {
-          player1.rotation.y += yaw * deltaTime;
-        }
-        player1.translateY(height* deltaTime);
-        var relativeCameraOffset = new Vector3(0,2,3);
-        var cameraOffset = relativeCameraOffset.applyMatrix4( player1.matrixWorld );
-        that.camera.position.x = cameraOffset.x;
-        that.camera.position.y = cameraOffset.y;
-        that.camera.position.z = cameraOffset.z;
-        that.camera.lookAt(player1.position);
-        // console.log(player1.position);
-        // that.particleEmitter.position.set(player1.position);
-        // if (deltaParticles > 0) {
-        //   that.particles.options.position.x = player1.position.x;
-        //   that.particles.options.position.y = player1.position.y;
-        //   that.particles.options.position.z = player1.position.z;
-        //   for (var x = 0; x < that.particles.spawnerOptions.spawnRate; x++) {
-            // that.particles.particleSystem.spawnParticle(that.particles.options);
-        //   }
-        // }
-        // that.particles.particleSystem.update(that.tick);
-        that.checkCollisions(player1);
-        var arrowP1 = that.scene.getObjectByName('arrowP1');
-        arrowP1.lookAt(that.collidableMeshes[0].position);
-        // arrowP1.rotation.x = 0;
-        // arrowP1.rotation.z = 0;
-        // arrowP1.rotation.y *= -1;
-        var relativeArrowOffset = new Vector3(0,2,0);
-        var arrowOffset = relativeArrowOffset.applyMatrix4( player1.matrixWorld );
-        arrowP1.position.x = arrowOffset.x;
-        arrowP1.position.y = arrowOffset.y;
-        arrowP1.position.z = arrowOffset.z;
-        if (player1.falling == true) {
-          player1.position.y -= 1;
-        }
-        if (that.collidableMeshes.length == 0) {
-          cancelAnimationFrame(request);
-          $("#scene-container").empty();
-          $(".general-container").trigger('gameOver', {score: that.score.view()});
-        }
-        if (player1.position.y <= 10) {
-          cancelAnimationFrame(request);
-          $('#scene-container').empty();
-          $(".general-container").trigger('gameOver', {score: that.score.loser()})
-        }
-        that.particleEmitter.position.set(player1.position.x, player1.position.y, player1.position.z);
-        that.particleEmitter.visible = (player1.boost > 0) ? true : false;
-        that.particleEmitter.material.update(deltaTime);
-        // that.keepCarOnTrack(player1);
-      }
-      if (typeof player2 != "undefined") {
-        player2.translateZ(forward2 * deltaTime);
-        player2.rotation.y += yaw2 * deltaTime;
-        if (player2.boost > 0) {
-          player2.boost -= deltaTime;
-          forward *= 2;
-        }
-        player2.translateY(height2* deltaTime);
-        var relativeCameraOffset = new Vector3(0,2,3);
-        var cameraOffset = relativeCameraOffset.applyMatrix4( player2.matrixWorld );
-        that.cameraMulti.position.x = cameraOffset.x;
-        that.cameraMulti.position.y = cameraOffset.y;
-        that.cameraMulti.position.z = cameraOffset.z;
-        that.cameraMulti.lookAt(player2.position);
-        that.checkCollisions(player2);
-        if (that.collidableMeshes.length == 0) {
-          cancelAnimationFrame(request);
-          $("#scene-container").empty();
-          $(".general-container").trigger('gameOver', {score: that.score.view()});
-        }
-      }
-
-
-      // that.camera.position = player1.position;
-      // that.camera.translateX((forward2 * -1) * deltaTime);
-      // that.camera.position.y  = player1.position.y + 2;
-      // that.camera.translateY(height * deltaTime);
-      // that.camera.lookAt(player1.position);
-      for (var i = 1; i <= that.collidablePowers.length; i++) {
-        var power = that.scene.getObjectByName('power'+i);
-        power.rotation.y += deltaTime;
-      }
-      if (typeof that.scene != "undefined" && typeof that.camera != "undefined") {
-        // that.renderer.render(that.scene, that.camera);
-        that.composer.render(that.scene, that.camera);
-        if (that.players == 2) {
-          that.rendererMulti.render(that.scene, that.cameraMulti);
-        }
-      }
-      $("#scoreContainer").text(that.score.view());
+    var player1 = that.scene.getObjectByName('modeloPlayer');
+    var player2 = that.scene.getObjectByName('modeloPlayer2');
+    var deltaTime = that.clock.getDelta();
+    // var deltaParticles = that.clock.getDelta() * that.particles.spawnerOptions.timeScale;
+    // that.tick += deltaParticles;
+    var yaw = 0;
+    var forward = 0;
+    var height = 0;
+    var height2 = 0;
+    var yaw2 = 0;
+    var forward2 = 0;
+    if (that.keys["A"]) {
+      yaw = 3;
     }
-    renderinner();
+    else if (that.keys["D"]) {
+      yaw = -3;
+    }
+    if (that.keys["W"]) {
+      forward = -10;
+    }
+    else if (that.keys["S"]) {
+      forward = 10;
+    }
+    if (that.keys["Q"]) {
+      height = -5;
+    }
+    else if (that.keys["E"]) {
+      height = 5;
+    }
+    if (that.keys["O"]) {
+      height2 = -5;
+    }
+    else if (that.keys["U"]) {
+      height2 = 5;
+    }
+    if (that.keys['K']) {
+      forward2 = 10;
+    }
+    else if (that.keys['I']) {
+      forward2 = -10;
+    }
+    if (that.keys['J']) {
+      yaw2 = 3
+    }
+    else if (that.keys['L']) {
+      yaw2 = -3;
+    }
+    if (that.keys['T']) {
+      // cancelAnimationFrame(this.id);
+      cancelAnimationFrame(request);
+      $("#scene-container").empty();
+      $(".general-container").trigger('gameOver', {score: that.score.view()});
+    }
+
+    // that.camera.rotklation.y += yaw * deltaTime;
+    if (typeof player1 != "undefined") {
+      // player1.position.y -= 0.01;
+      if (player1.boost > 0) {
+        that.blured = true;
+        player1.boost -= deltaTime;
+        forward *= 2;
+      }
+      else{
+        that.blured = false;
+      }
+      player1.translateZ(forward * deltaTime);
+      if (forward != 0) {
+        player1.rotation.y += yaw * deltaTime;
+      }
+      player1.translateY(height* deltaTime);
+      var relativeCameraOffset = new Vector3(0,2,3);
+      var cameraOffset = relativeCameraOffset.applyMatrix4( player1.matrixWorld );
+      that.camera.position.x = cameraOffset.x;
+      that.camera.position.y = cameraOffset.y;
+      that.camera.position.z = cameraOffset.z;
+      that.camera.lookAt(player1.position);
+      // console.log(player1.position);
+      // that.particleEmitter.position.set(player1.position);
+      // if (deltaParticles > 0) {
+      //   that.particles.options.position.x = player1.position.x;
+      //   that.particles.options.position.y = player1.position.y;
+      //   that.particles.options.position.z = player1.position.z;
+      //   for (var x = 0; x < that.particles.spawnerOptions.spawnRate; x++) {
+          // that.particles.particleSystem.spawnParticle(that.particles.options);
+      //   }
+      // }
+      // that.particles.particleSystem.update(that.tick);
+      that.checkCollisions(player1);
+      var arrowP1 = that.scene.getObjectByName('arrowP1');
+      if (that.collidableMeshes.length > 0) {
+        arrowP1.lookAt(that.collidableMeshes[0].position);
+      }
+      var relativeArrowOffset = new Vector3(0,2.3,0);
+      var arrowOffset = relativeArrowOffset.applyMatrix4( player1.matrixWorld );
+      arrowP1.position.x = arrowOffset.x;
+      arrowP1.position.y = arrowOffset.y;
+      arrowP1.position.z = arrowOffset.z;
+      if (player1.falling == true) {
+        player1.position.y -= 1;
+      }
+      that.particleEmitter.position.set(player1.position.x, player1.position.y, player1.position.z);
+      that.particleEmitter.visible = (player1.boost > 0) ? true : false;
+      that.particleEmitter.material.update(deltaTime);
+      // that.keepCarOnTrack(player1);
+    }
+    if (typeof player2 != "undefined") {
+      player2.translateZ(forward2 * deltaTime);
+      player2.rotation.y += yaw2 * deltaTime;
+      if (player2.boost > 0) {
+        player2.boost -= deltaTime;
+        forward *= 2;
+      }
+      player2.translateY(height2* deltaTime);
+      var relativeCameraOffset = new Vector3(0,2,3);
+      var cameraOffset = relativeCameraOffset.applyMatrix4( player2.matrixWorld );
+      that.cameraMulti.position.x = cameraOffset.x;
+      that.cameraMulti.position.y = cameraOffset.y;
+      that.cameraMulti.position.z = cameraOffset.z;
+      that.cameraMulti.lookAt(player2.position);
+      that.checkCollisions(player2);
+    }
+
+
+    // that.camera.position = player1.position;
+    // that.camera.translateX((forward2 * -1) * deltaTime);
+    // that.camera.position.y  = player1.position.y + 2;
+    // that.camera.translateY(height * deltaTime);
+    // that.camera.lookAt(player1.position);
+    for (var i = 1; i <= that.collidablePowers.length; i++) {
+      var power = that.scene.getObjectByName('power'+i);
+      power.rotation.y += deltaTime;
+    }
+    if (typeof that.scene != "undefined" && typeof that.camera != "undefined") {
+      if (that.blured) {
+          that.composer.render(that.scene, that.camera);
+      }
+      else{
+          that.renderer.render(that.scene, that.camera);
+      }
+
+      if (that.players == 2) {
+        that.rendererMulti.render(that.scene, that.cameraMulti);
+      }
+    }
+    $("#scoreContainer").text(that.score.view());
+    var request = window.requestAnimationFrame(this.animate);
+    console.log(that.collidableMeshes.length);
+    console.log(player1.position.y);
+    if (that.collidableMeshes.length == 0) {
+      cancelAnimationFrame(request);
+      console.log("se acabo");
+      $("#scene-container").empty();
+      $(".general-container").trigger('gameOver', {score: that.score.view()});
+    }
+    if (player1.position.y <= 10) {
+      cancelAnimationFrame(request);
+      $('#scene-container').empty();
+      $(".general-container").trigger('gameOver', {score: that.score.loser()})
+    }
   }
 
   removeObjectFromScene(name){
@@ -422,7 +434,7 @@ class Escena{
     if (this.players == 2) {
       container.append(this.rendererMulti.domElement);
     }
-    this.render();
+    this.animate();
   }
 }
 
