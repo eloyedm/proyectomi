@@ -25,6 +25,7 @@ import Score from './Score.js';
 import Powerup from './Powerup.js';
 import Particles from './Particles.js';
 import Model from './Model.js';
+import EffectComposer, { RenderPass, ShaderPass, CopyShader, DotScreenShader } from 'three-effectcomposer-es6';
 const autoBind = require('auto-bind');
 
 class Escena{
@@ -50,6 +51,7 @@ class Escena{
     this.score = '';
     this.particleEmitter = '';
     this.tick = 0;
+    this.composer = '';
     autoBind(this);
     this.initialize();
   }
@@ -116,19 +118,11 @@ class Escena{
     this.scene.add(skydome.initialize());
     var that = this;
     var terreno = new Terreno('./images/Erenvidor-heightmap.png');
-    // var grid = new GridHelper(50, 10, 0xffffff, 0xffffff);
-    // grid.position.y = -1;
-    // this.scene.add(grid);
     var powerup = new Powerup();
     var particles = new Particles();
     this.particleEmitter = particles.setUp(this.camera, this.alto);
     this.particleEmitter.position.set(-176,33,-10);
     this.scene.add(this.particleEmitter);
-    // this.particles = particles;
-    // console.log(this.particles);
-    // terreno.initialize(function(plane){
-    //   that.scene.add(plane);
-    // });
     pista.createBoxes(function(boxes){
       for (var i = 0; i < boxes.length; i++) {
         that.collidableMeshes.push(boxes[i]);
@@ -138,11 +132,8 @@ class Escena{
     this.addPLayers();
 
     terreno.buildTrack(function(terrenoCargado){
-      // terrenoCargado.scale.set(10,10,10);
       that.scene.add(terrenoCargado);
       that.track = that.scene.getObjectByName('modeloPista');
-      // that.collidableMeshes.push(terrenoCargado.children[0]);
-      // that.collidableMeshes.push(terrenoCargado.children[1]);
     });
     terreno.buildLandscape(function(terrenoCargado){
       that.scene.add(terrenoCargado);
@@ -153,6 +144,17 @@ class Escena{
         that.collidablePowers.push(spheres[i]);
       }
     });
+    this.composer = new EffectComposer(this.renderer);
+    this.composer.addPass(new RenderPass(this.scene, this.camera));
+    // composer.addPass(new RenderPass(this.scene, this.camera));
+    //
+    // var effect = new ShaderPass( DotScreenShader );
+    // effect.uniforms('scale').value = 4;
+    // this.composer.addPass(effect);
+    const copyPass = new ShaderPass(CopyShader);
+    copyPass.renderToScreen = true
+    this.composer.addPass(copyPass);
+
   }
 
   addObjectToScene(object){
@@ -342,13 +344,12 @@ class Escena{
         arrowP1.lookAt(that.collidableMeshes[0].position);
         // arrowP1.rotation.x = 0;
         // arrowP1.rotation.z = 0;
-        arrowP1.rotation.y *= -1;
+        // arrowP1.rotation.y *= -1;
         var relativeArrowOffset = new Vector3(0,2,0);
         var arrowOffset = relativeArrowOffset.applyMatrix4( player1.matrixWorld );
         arrowP1.position.x = arrowOffset.x;
         arrowP1.position.y = arrowOffset.y;
         arrowP1.position.z = arrowOffset.z;
-        console.log(that.collidableMeshes[0]);
         if (player1.falling == true) {
           player1.position.y -= 1;
         }
@@ -400,7 +401,8 @@ class Escena{
         power.rotation.y += deltaTime;
       }
       if (typeof that.scene != "undefined" && typeof that.camera != "undefined") {
-        that.renderer.render(that.scene, that.camera);
+        // that.renderer.render(that.scene, that.camera);
+        that.composer.render(that.scene, that.camera);
         if (that.players == 2) {
           that.rendererMulti.render(that.scene, that.cameraMulti);
         }
