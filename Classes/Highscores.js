@@ -9,9 +9,11 @@ class Highscores{
 
   view(){
     var selectString = '.'+this.container+' .scores';
+    var serviceUrl = '/';
+    // var serviceUrl = '/proyectomi/';
     $.ajax({
       method: "GET",
-      url: '/proyectomi/services.php',
+      url: serviceUrl+'services.php',
       data: {
         action: 'scores'
       },

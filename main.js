@@ -76,7 +76,12 @@ class Main{
     })
     $(generalContainer).on('gameOver', function(e, data){
       var final = new Final(data.score);
-      $('#scene-container').append(final.view());
+      console.log("paso por aqui");
+      if($('.final-container').length == 0){
+        $('#scene-container').empty();
+        $('#scene-container').append(final.view());
+      }
+
       final.addSharers();
     })
 

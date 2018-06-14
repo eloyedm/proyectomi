@@ -162,11 +162,33 @@
 
 #scene-container .final-container{
   background-color: #08224c;
-  /* height: 100%; */
+  height: 100%;
   text-align: center;
-  position: absolute;
+  position: fixed;
   width: 100%;
   color: white;
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+}
+
+#scene-container .final-container span:first-child{
+  font-size: 36px;
+}
+
+.final-container .sharers{
+  display: flex;
+  justify-content: center;
+}
+
+.final-container .sharers .twitter-share, .final-container .sharers .facebook-share{
+  margin: 10px;
+  font-size: 24px;
+}
+
+#scene-container .final-container .finalScore{
+  margin: 25px;
+  font-size: 32px;
 }
 
 .highscores-container{

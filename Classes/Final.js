@@ -11,8 +11,8 @@ class Final {
 
   view(){
     this.domElement = '<div class="final-container">'+
-      '<span> YOUR SCORE: </span>'+
-      '<div class"finalScore">'+this.score+'</div>'+
+      '<span> YOUR SCORE </span>'+
+      '<div class="finalScore">'+this.score+'</div>'+
       '<span id="highscoreNotice"> NEW HIGHSCORE </span>'+
       '<span id="scoreNotice"> BETTER LUCK NEXT TIME </span>'+
       '<div class="sharers">'+
@@ -23,6 +23,7 @@ class Final {
           '<div class="fb-share-button" data-href="https://localhost/proyectomi" data-layout="button" data-size="small" data-mobile-iframe="false"><a target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Flocalhost%2Fproyectomi&amp;src=sdkpreparse" class="fb-xfbml-parse-ignore">Compartir</a></div>'+
         '</div>'+
       '</div>'+
+      '<div class="retry"><a href="/">RETRY</a></div>'+
     '</div>';
 
     return this.domElement;
@@ -48,12 +49,16 @@ class Final {
 
   checkScores(){
     var score = this.score;
+    var playerName = localStorage.getItem('playerName');
+    var serviceUrl = '/';
+    // var serviceUrl = '/proyectomi/';
     $.ajax({
       method: "GET",
-      url: '/proyectomi/services.php',
+      url: serviceUrl+'services.php',
       data: {
         action: 'checkScores',
-        score: score
+        score: score,
+        name: playerName
       },
       success: function(data){
         if (data.status) {

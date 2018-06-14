@@ -57,9 +57,12 @@
   }
 
   function getBDConnection(){
-    $user = 'root';
-    $password = 'diaz.1913';
-    $hosts = 'localhost';
+    // $user = 'root';
+    // $password = '';
+    // $hosts = 'localhost';
+    $user = 'epizz_22239182';
+    $password = '2DUtPQiLbAGr';
+    $hosts = 'sql103.epizy.com';
     $dbname = 'web_racers';
 
     $conn = mysqli_connect($hosts, $user, $password, $dbname);

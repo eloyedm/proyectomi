@@ -58,8 +58,9 @@ class Escena{
     this.initialize();
   }
   initialize(){
+    var quality = this.quality;
     this.renderer = new WebGLRenderer({
-      precision: this.quality
+      precision: quality
     });
     if (this.players == 2) {
       this.rendererMulti = new WebGLRenderer({
@@ -372,7 +373,6 @@ class Escena{
       that.particleEmitter.material.update(deltaTime);
       if (player1.position.y <= 10) {
         cancelAnimationFrame(request);
-        $('#scene-container').empty();
         $(".general-container").trigger('gameOver', {score: that.score.loser()})
       }
       // that.keepCarOnTrack(player1);
@@ -418,9 +418,8 @@ class Escena{
     }
     $("#scoreContainer").text(that.score.view());
     var request = window.requestAnimationFrame(this.animate);
-    if (that.collidableMeshes != 0 && that.collidableMeshes.length == 0) {
+    if (typeof that.collidableMeshes == 'object' && that.collidableMeshes.length == 0) {
       cancelAnimationFrame(request);
-      console.log("se acabo");
       $("#scene-container").empty();
       $(".general-container").trigger('gameOver', {score: that.score.view()});
     }

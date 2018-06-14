@@ -16,13 +16,15 @@ class Start {
     return this.domElement;
   }
   events(){
+    var serviceUrl = '/';
+    // var serviceUrl = '/proyectomi/';
     var that = this;
     var sendButton = '.'+this.container+' button';
     $(sendButton).click(function(){
       var nickName = $("#nickname").val();
       $.ajax({
         method: 'GET',
-        url: '/proyectomi/services.php',
+        url: serviceUrl + 'services.php',
         data: {
           action: 'newplayer',
           name: nickName
