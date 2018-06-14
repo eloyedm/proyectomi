@@ -47,12 +47,13 @@ class Escena{
     this.quality = quality;
     this.players = players;
     this.track = '';
-    this.collidableMeshes = [];
+    this.collidableMeshes = 0;
     this.collidablePowers = [];
     this.score = '';
     this.particleEmitter = '';
     this.tick = 0;
     this.composer = '';
+    this.pause = false;
     autoBind(this);
     this.initialize();
   }
@@ -125,10 +126,12 @@ class Escena{
     this.particleEmitter.position.set(-176,33,-10);
     this.scene.add(this.particleEmitter);
     pista.createBoxes(function(boxes){
+      var collidableMeshes = [];
       for (var i = 0; i < boxes.length; i++) {
-        that.collidableMeshes.push(boxes[i]);
+        collidableMeshes.push(boxes[i]);
         that.scene.add(boxes[i]);
       }
+      that.collidableMeshes = collidableMeshes;
     })
     this.addPLayers();
 
@@ -160,7 +163,7 @@ class Escena{
 		effect.uniforms[ 'scale' ].value = 7;
 		this.composer.addPass( effect );
     effect = new ShaderPass( RGBShiftShader );
-		effect.uniforms[ 'amount' ].value = 0.0015;
+		effect.uniforms[ 'amount' ].value = 0.8015;
 		effect.renderToScreen = true;
 		this.composer.addPass( effect );
   }
@@ -171,6 +174,10 @@ class Escena{
 
   keyUp(event){
     this.keys[String.fromCharCode(event.keyCode)] = false;
+    if (String.fromCharCode(event.keyCode) == 'R') {
+      $("#pauseContainer").toggle();
+      this.pause = !this.pause;
+    }
   }
 
   keyDown(event){
@@ -274,47 +281,44 @@ class Escena{
     var height2 = 0;
     var yaw2 = 0;
     var forward2 = 0;
-    if (that.keys["A"]) {
-      yaw = 3;
-    }
-    else if (that.keys["D"]) {
-      yaw = -3;
-    }
-    if (that.keys["W"]) {
-      forward = -10;
-    }
-    else if (that.keys["S"]) {
-      forward = 10;
-    }
-    if (that.keys["Q"]) {
-      height = -5;
-    }
-    else if (that.keys["E"]) {
-      height = 5;
-    }
-    if (that.keys["O"]) {
-      height2 = -5;
-    }
-    else if (that.keys["U"]) {
-      height2 = 5;
-    }
-    if (that.keys['K']) {
-      forward2 = 10;
-    }
-    else if (that.keys['I']) {
-      forward2 = -10;
-    }
-    if (that.keys['J']) {
-      yaw2 = 3
-    }
-    else if (that.keys['L']) {
-      yaw2 = -3;
-    }
-    if (that.keys['T']) {
-      // cancelAnimationFrame(this.id);
+    if (this.pause == false) {
       cancelAnimationFrame(request);
-      $("#scene-container").empty();
-      $(".general-container").trigger('gameOver', {score: that.score.view()});
+      if (that.keys["A"]) {
+        yaw = 3;
+      }
+      else if (that.keys["D"]) {
+        yaw = -3;
+      }
+      if (that.keys["W"]) {
+        forward = -10;
+      }
+      else if (that.keys["S"]) {
+        forward = 10;
+      }
+      if (that.keys["Q"]) {
+        height = -5;
+      }
+      else if (that.keys["E"]) {
+        height = 5;
+      }
+      if (that.keys["O"]) {
+        height2 = -5;
+      }
+      else if (that.keys["U"]) {
+        height2 = 5;
+      }
+      if (that.keys['K']) {
+        forward2 = 10;
+      }
+      else if (that.keys['I']) {
+        forward2 = -10;
+      }
+      if (that.keys['J']) {
+        yaw2 = 3
+      }
+      else if (that.keys['L']) {
+        yaw2 = -3;
+      }
     }
 
     // that.camera.rotklation.y += yaw * deltaTime;
@@ -366,6 +370,11 @@ class Escena{
       that.particleEmitter.position.set(player1.position.x, player1.position.y, player1.position.z);
       that.particleEmitter.visible = (player1.boost > 0) ? true : false;
       that.particleEmitter.material.update(deltaTime);
+      if (player1.position.y <= 10) {
+        cancelAnimationFrame(request);
+        $('#scene-container').empty();
+        $(".general-container").trigger('gameOver', {score: that.score.loser()})
+      }
       // that.keepCarOnTrack(player1);
     }
     if (typeof player2 != "undefined") {
@@ -409,19 +418,13 @@ class Escena{
     }
     $("#scoreContainer").text(that.score.view());
     var request = window.requestAnimationFrame(this.animate);
-    console.log(that.collidableMeshes.length);
-    console.log(player1.position.y);
-    if (that.collidableMeshes.length == 0) {
+    if (that.collidableMeshes != 0 && that.collidableMeshes.length == 0) {
       cancelAnimationFrame(request);
       console.log("se acabo");
       $("#scene-container").empty();
       $(".general-container").trigger('gameOver', {score: that.score.view()});
     }
-    if (player1.position.y <= 10) {
-      cancelAnimationFrame(request);
-      $('#scene-container').empty();
-      $(".general-container").trigger('gameOver', {score: that.score.loser()})
-    }
+
   }
 
   removeObjectFromScene(name){

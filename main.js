@@ -5,6 +5,7 @@ import Home from './Classes/Home.js';
 import Final from './Classes/Final.js';
 import Highscores from './Classes/Highscores.js';
 import Start from './Classes/Start.js';
+import Pause from './Classes/Pause.js';
 
 class Main{
   constructor() {
@@ -17,6 +18,7 @@ class Main{
     var settings = new Settings();
     var highscores = new Highscores();
     var home = new Home();
+    var pause = new Pause();
     generalContainer.append(home.view());
     if (localStorage.getItem('playerName') == null) {
       generalContainer.append(start.view());
@@ -61,6 +63,7 @@ class Main{
 
       scene.draw($('#scene-container'));
       $('#scene-container').append(score);
+      $('#scene-container').append(pause.view());
     });
     $(generalContainer).on('letsPlayTogether', function(){
       var scene = new Escena(window.innerWidth, window.innerHeight, settings.resolution, 2);
@@ -69,6 +72,7 @@ class Main{
       $(generalContainer).hide();
       scene.draw($('#scene-container'));
       $('#scene-container').append(score);
+      $('#scene-container').append(pause.view());
     })
     $(generalContainer).on('gameOver', function(e, data){
       var final = new Final(data.score);

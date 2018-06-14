@@ -193,3 +193,39 @@
 .highscores-container .scores .score div{
   font-size: 24px;
 }
+
+#scoreNotice, #highscoreNotice{
+  display: none;
+}
+
+#pauseContainer{
+  display: none;
+  position: fixed;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0,0,0,0.7);
+}
+
+#pauseContainer .pauseNotice{
+  color: white;
+  top: 50%;
+  position: relative;
+  text-align: center;
+  height: 50px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+}
+
+#pauseContainer .pauseNotice span{
+  font-size: 40px;
+}
+
+#pauseContainer .pauseNotice span#quit{
+  color: yellow;
+  font-size: 32px;
+}
+
+#pauseContainer .pauseNotice span#quit a{
+  color: yellow;
+}

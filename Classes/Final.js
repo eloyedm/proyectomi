@@ -13,7 +13,8 @@ class Final {
     this.domElement = '<div class="final-container">'+
       '<span> YOUR SCORE: </span>'+
       '<div class"finalScore">'+this.score+'</div>'+
-      '<span> BETTER LUCK NEXT TIME </span>'+
+      '<span id="highscoreNotice"> NEW HIGHSCORE </span>'+
+      '<span id="scoreNotice"> BETTER LUCK NEXT TIME </span>'+
       '<div class="sharers">'+
         '<div class="twitter-share">'+
           '<span>Twitter</span>'+
@@ -42,6 +43,27 @@ class Final {
     //     fbAppId: '1256136544478956'
     //   });
     // })
+    this.checkScores();
+  }
+
+  checkScores(){
+    var score = this.score;
+    $.ajax({
+      method: "GET",
+      url: '/proyectomi/services.php',
+      data: {
+        action: 'checkScores',
+        score: score
+      },
+      success: function(data){
+        if (data.status) {
+          $('#highscoreNotice').show();
+        }
+        else{
+          $('#scoreNotice').show();
+        }
+      }
+    })
   }
 }
 export default Final

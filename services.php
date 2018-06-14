@@ -29,6 +29,28 @@
         echo json_encode("ya existia");
       }
       break;
+    case 'checkScores':
+      $score = $_GET['score'];
+      $playerName = $_GET['name'];
+      $query = "SELECT score FROM highscore WHERE score >'".$score."'";
+      $result = mysqli_query($connection, $query);
+      $count = count(mysqli_fetch_all($result, MYSQLI_ASSOC));
+      $userquery = "SELECT id FROM player WHERE name = '".$playerName."'";
+      $resultUser = mysqli_query($connection, $userquery);
+      $id = mysqli_fetch_all($resultUser, MYSQLI_ASSOC)[0]['id'];
+      $status = (object)array(
+        'status' => true
+      );
+      if ($count < 10) {
+        $scoreQuery = "INSERT INTO highscore (score, player) VALUES(".$score.",".$id.")";
+        $resultScore = mysqli_query($connection, $scoreQuery);
+        echo json_encode($status);
+      }
+      else{
+        $status->status = false;
+        echo json_encode($status);
+      }
+      break;
     default:
       echo "eh we te falta el action";
       break;
@@ -36,7 +58,7 @@
 
   function getBDConnection(){
     $user = 'root';
-    $password = '';
+    $password = 'diaz.1913';
     $hosts = 'localhost';
     $dbname = 'web_racers';
 
