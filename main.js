@@ -19,7 +19,6 @@ class Main{
     var highscores = new Highscores();
     var home = new Home();
     var pause = new Pause();
-    var scene = new Escena(window.innerWidth, window.innerHeight, settings.resolution);
     generalContainer.append(home.view());
     if (localStorage.getItem('playerName') == null) {
       generalContainer.append(start.view());
@@ -54,7 +53,7 @@ class Main{
       $('.'+highscores.container).show();
     });
     $(generalContainer).on('letsPlay', function(){
-      scene.setUpPlayerscamera(1);
+      var scene = new Escena(window.innerWidth, window.innerHeight, settings.resolution, 1);
       var score = $('<div />', {
         id: "scoreContainer"
       });
@@ -67,7 +66,7 @@ class Main{
       $('#scene-container').append(pause.view());
     });
     $(generalContainer).on('letsPlayTogether', function(){
-      scene.setUpPlayerscamera(2);
+      var scene = new Escena(window.innerWidth, window.innerHeight, settings.resolution, 2);
       document.addEventListener('keydown', scene.keyDown);
       document.addEventListener('keyup', scene.keyUp);
       $(generalContainer).hide();

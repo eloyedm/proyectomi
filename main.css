@@ -140,6 +140,41 @@
   padding: 10px;
 }
 
+.volume.option > span{
+  float: left;
+}
+
+.volume.option .slidecontainer{
+  padding: 15px 0;
+  height: 100%
+}
+
+.volume.option .slidecontainer input{
+  -webkit-appearance: none;
+  appearance: none;
+  height: 25px;
+  width: 50%;
+  float: right;
+  opacity: 0.7;
+  background-color: #d3d3d3;
+  outline: none;
+  -webkit-transition: .2s;
+  transition: opacity .2s;
+}
+
+.volume.option .slidecontainer input:hover{
+  opacity: 1;
+}
+
+.volume.option .slidecontainer input::webkit-slider-thumb{
+  -webkit-appearance: none;
+  appearance: none;
+  width: 25px;
+  height: 25px;
+  background-color: #4CAF50;
+  cursor: pointer;
+}
+
 .resolution-options{
   float: right;
   box-shadow: 0 0 5px #488bf9, 0 0 10px #488bf9, 0 0 20px #488bf9, 0 0 30px #488bf9, 0 0 40px #488bf9, 0 0 55px #488bf9, 0 0 75px #488bf9;

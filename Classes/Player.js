@@ -40,6 +40,7 @@ class Player{
       objetoCargado.position.x = 0;
       objetoCargado.position.y = 10;
       objetoCargado.position.z = 0;
+      objetoCargado.falling = false;
       // playerCargado.rotation.set(0 ,90,0);
       callback(objetoCargado);
     })

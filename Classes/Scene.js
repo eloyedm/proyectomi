@@ -45,7 +45,7 @@ class Escena{
       'S' : false
     };
     this.quality = quality;
-    this.players = '';
+    this.players = players;
     this.track = '';
     this.collidableMeshes = 0;
     this.collidablePowers = [];
@@ -58,8 +58,47 @@ class Escena{
     this.initialize();
   }
   initialize(){
+    var quality = this.quality;
+    this.renderer = new WebGLRenderer({
+      precision: quality
+    });
+    if (this.players == 2) {
+      this.rendererMulti = new WebGLRenderer({
+        precision: this.quality
+      })
+    }
+    this.renderer.setClearColor(new Color(0,0,0));
+    if (this.players == 1) {
+      this.renderer.setSize(this.ancho, this.alto);
+    }else{
+      this.renderer.setSize(this.ancho/2, this.alto);
+      this.rendererMulti.setSize(this.ancho/2, this.alto);
+    }
+
     this.clock = new Clock();
     var pista = new Pista();
+    if (this.players == 1) {
+      this.camera = new PerspectiveCamera(
+        75,
+        this.ancho /this.alto,
+        0.1,
+        300
+      );
+    }
+    else{
+      this.camera = new PerspectiveCamera(
+        75,
+        (this.ancho / 2) /this.alto,
+        0.1,
+        300
+      );
+      this.cameraMulti = new PerspectiveCamera(
+        75,
+        (this.ancho / 2) /this.alto,
+        0.1,
+        300
+      )
+    }
     this.scene = new Scene();
 
     var material = new MeshLambertMaterial({
@@ -95,6 +134,7 @@ class Escena{
       }
       that.collidableMeshes = collidableMeshes;
     })
+    this.addPLayers();
 
     terreno.buildTrack(function(terrenoCargado){
       that.scene.add(terrenoCargado);
@@ -109,59 +149,24 @@ class Escena{
         that.collidablePowers.push(spheres[i]);
       }
     });
-  }
-
-  setUpPlayerscamera(players){
-    this.players = players
-    var quality = this.quality;
-    this.renderer = new WebGLRenderer({
-      precision: quality
-    });
-    if (this.players == 2) {
-      this.rendererMulti = new WebGLRenderer({
-        precision: quality
-      })
-    }
-    // this.renderer.setClearColor(new Color(0,0,0));
-    if (this.players == 1) {
-      this.renderer.setSize(this.ancho, this.alto);
-    }else{
-      this.renderer.setSize(this.ancho/2, this.alto);
-      this.rendererMulti.setSize(this.ancho/2, this.alto);
-    }
-    if (this.players == 1) {
-      this.camera = new PerspectiveCamera(
-        75,
-        this.ancho /this.alto,
-        0.1,
-        300
-      );
-    }
-    else{
-      this.camera = new PerspectiveCamera(
-        75,
-        (this.ancho / 2) /this.alto,
-        0.1,
-        300
-      );
-      this.cameraMulti = new PerspectiveCamera(
-        75,
-        (this.ancho / 2) /this.alto,
-        0.1,
-        300
-      )
-    }
-    this.addPLayers();
     this.composer = new EffectComposer(this.renderer);
     this.composer.addPass(new RenderPass(this.scene, this.camera));
+    // composer.addPass(new RenderPass(this.scene, this.camera));
+    //
+    // var effect = new ShaderPass( DotScreenShader );
+    // effect.uniforms('scale').value = 4;
+    // // this.composer.addPass(effect);
+    // const copyPass = new ShaderPass(CopyShader);
+    // copyPass.renderToScreen = true
+    // this.composer.addPass(copyPass);
+
     var effect = new ShaderPass( DotScreenShader );
-    effect.uniforms[ 'scale' ].value = 7;
-    // effect.renderToScreen = true;
-    this.composer.addPass( effect );
+		effect.uniforms[ 'scale' ].value = 7;
+		this.composer.addPass( effect );
     effect = new ShaderPass( RGBShiftShader );
-    effect.uniforms[ 'amount' ].value = 0.8015;
-    effect.renderToScreen = true;
-    this.composer.addPass( effect );
+		effect.uniforms[ 'amount' ].value = 0.8015;
+		effect.renderToScreen = true;
+		this.composer.addPass( effect );
   }
 
   addObjectToScene(object){
@@ -197,7 +202,7 @@ class Escena{
     if (this.players == 2) {
       player2.drawSecondPLayerModel((playerCargado) => {
         playerCargado.position.x = -180;
-        playerCargado.position.y = 57.9;
+        playerCargado.position.y = 58.9;
         playerCargado.position.z = -10;
         that.scene.add(playerCargado);
       });
@@ -373,11 +378,13 @@ class Escena{
       // that.keepCarOnTrack(player1);
     }
     if (typeof player2 != "undefined") {
-      player2.translateZ(forward2 * deltaTime);
-      player2.rotation.y += yaw2 * deltaTime;
       if (player2.boost > 0) {
         player2.boost -= deltaTime;
-        forward *= 2;
+        forward2 *= 2;
+      }
+      player2.translateZ(forward2 * deltaTime);
+      if (forward2 != 0) {
+        player2.rotation.y += yaw2 * deltaTime;
       }
       player2.translateY(height2* deltaTime);
       var relativeCameraOffset = new Vector3(0,2,3);
@@ -387,6 +394,13 @@ class Escena{
       that.cameraMulti.position.z = cameraOffset.z;
       that.cameraMulti.lookAt(player2.position);
       that.checkCollisions(player2);
+      if (player2.falling == true) {
+        player2.position.y -= 1;
+      }
+      if (player2.position.y <= 10) {
+        cancelAnimationFrame(request);
+        $(".general-container").trigger('gameOver', {score: that.score.loser()})
+      }
     }
 
 
