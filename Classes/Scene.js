@@ -45,7 +45,6 @@ class Escena{
       'S' : false
     };
     this.quality = quality;
-    this.players = players;
     this.track = '';
     this.collidableMeshes = 0;
     this.collidablePowers = [];
@@ -55,10 +54,11 @@ class Escena{
     this.composer = '';
     this.pause = false;
     autoBind(this);
-    this.initialize();
+    this.buildPropObjects();
   }
-  initialize(){
+  initialize(players){
     var quality = this.quality;
+    this.players = players;
     this.renderer = new WebGLRenderer({
       precision: quality
     });
@@ -76,7 +76,6 @@ class Escena{
     }
 
     this.clock = new Clock();
-    var pista = new Pista();
     if (this.players == 1) {
       this.camera = new PerspectiveCamera(
         75,
@@ -99,56 +98,13 @@ class Escena{
         300
       )
     }
-    this.scene = new Scene();
 
-    var material = new MeshLambertMaterial({
-      color: new Color(0,0,1)
-    });
-
-    material = new MeshPhongMaterial({
-      color: new Color(0.5, 0.5, 0.5),
-      specular: new Color(1,1,1),
-      shininess: 500
-    });
-    var ambiental = new AmbientLight(new Color(1,1,1), 1.0);
-    var direccional = new DirectionalLight(new Color(1,1,0), 0.6);
-    var score = new Score();
-    this.score = score;
-    direccional.position.set(0,0,1);
-    this.scene.add(ambiental);
-    this.scene.add(direccional);
-    var skydome = new Skydome();
-    this.scene.add(skydome.initialize());
     var that = this;
-    var terreno = new Terreno('./images/Erenvidor-heightmap.png');
-    var powerup = new Powerup();
     var particles = new Particles();
     this.particleEmitter = particles.setUp(this.camera, this.alto);
     this.particleEmitter.position.set(-176,33,-10);
     this.scene.add(this.particleEmitter);
-    pista.createBoxes(function(boxes){
-      var collidableMeshes = [];
-      for (var i = 0; i < boxes.length; i++) {
-        collidableMeshes.push(boxes[i]);
-        that.scene.add(boxes[i]);
-      }
-      that.collidableMeshes = collidableMeshes;
-    })
     this.addPLayers();
-
-    terreno.buildTrack(function(terrenoCargado){
-      that.scene.add(terrenoCargado);
-      that.track = that.scene.getObjectByName('modeloPista');
-    });
-    terreno.buildLandscape(function(terrenoCargado){
-      that.scene.add(terrenoCargado);
-    })
-    powerup.spheres(function(spheres){
-      for (var i = 0; i < spheres.length; i++) {
-        that.scene.add(spheres[i]);
-        that.collidablePowers.push(spheres[i]);
-      }
-    });
     this.composer = new EffectComposer(this.renderer);
     this.composer.addPass(new RenderPass(this.scene, this.camera));
     // composer.addPass(new RenderPass(this.scene, this.camera));
@@ -167,6 +123,54 @@ class Escena{
 		effect.uniforms[ 'amount' ].value = 0.8015;
 		effect.renderToScreen = true;
 		this.composer.addPass( effect );
+  }
+
+  buildPropObjects(){
+    this.scene = new Scene();
+    var material = new MeshLambertMaterial({
+      color: new Color(0,0,1)
+    });
+
+    material = new MeshPhongMaterial({
+      color: new Color(0.5, 0.5, 0.5),
+      specular: new Color(1,1,1),
+      shininess: 500
+    });
+    var ambiental = new AmbientLight(new Color(1,1,1), 1.0);
+    var direccional = new DirectionalLight(new Color(1,1,0), 0.6);
+    direccional.position.set(0,0,1);
+    var score = new Score();
+    this.score = score;
+    var pista = new Pista();
+    var skydome = new Skydome();
+    var terreno = new Terreno('./images/Erenvidor-heightmap.png');
+    var powerup = new Powerup();
+    var that = this;
+    pista.createBoxes(function(boxes){
+      var collidableMeshes = [];
+      for (var i = 0; i < boxes.length; i++) {
+        collidableMeshes.push(boxes[i]);
+        that.scene.add(boxes[i]);
+      }
+      that.collidableMeshes = collidableMeshes;
+    })
+    terreno.buildTrack(function(terrenoCargado){
+      that.scene.add(terrenoCargado);
+      that.track = that.scene.getObjectByName('modeloPista');
+    });
+    terreno.buildLandscape(function(terrenoCargado){
+      that.scene.add(terrenoCargado);
+    })
+    powerup.spheres(function(spheres){
+      for (var i = 0; i < spheres.length; i++) {
+        that.scene.add(spheres[i]);
+        that.collidablePowers.push(spheres[i]);
+      }
+    });
+
+    this.scene.add(skydome.initialize());
+    this.scene.add(ambiental);
+    this.scene.add(direccional);
   }
 
   addObjectToScene(object){
@@ -214,7 +218,23 @@ class Escena{
       flechaCargada.position.z = -10;
       flechaCargada.name = 'arrowP1';
       that.scene.add(flechaCargada);
+      // flechaCargada.name = 'arroP2';
+      // that.scene.add(flechaCargada)
     });
+
+    if (this.players == 2) {
+      var arrowModel2 = new Model('./Models/', 'Arrow.obj', 'Arrow.mtl');
+      arrowModel2.loadModel((flechaCargada) => {
+        flechaCargada.position.x = -176;
+        flechaCargada.position.y = 58.9;
+        flechaCargada.position.z = -10;
+        flechaCargada.name = 'arrowP2';
+        that.scene.add(flechaCargada);
+        // flechaCargada.name = 'arroP2';
+        // that.scene.add(flechaCargada)
+      });
+    }
+
   }
 
   checkCollisions(mesh){
@@ -373,7 +393,7 @@ class Escena{
       that.particleEmitter.material.update(deltaTime);
       if (player1.position.y <= 10) {
         cancelAnimationFrame(request);
-        $(".general-container").trigger('gameOver', {score: that.score.loser()})
+        $(".general-container").trigger('gameOver', {score: that.score.loser(), winner: false, player: 1})
       }
       // that.keepCarOnTrack(player1);
     }
@@ -394,12 +414,21 @@ class Escena{
       that.cameraMulti.position.z = cameraOffset.z;
       that.cameraMulti.lookAt(player2.position);
       that.checkCollisions(player2);
+      var arrowP2 = that.scene.getObjectByName('arrowP2');
+      if (that.collidableMeshes.length > 0) {
+        arrowP2.lookAt(that.collidableMeshes[0].position);
+      }
+      var relativeArrowOffset = new Vector3(0,2.3,0);
+      var arrowOffset = relativeArrowOffset.applyMatrix4( player2.matrixWorld );
+      arrowP2.position.x = arrowOffset.x;
+      arrowP2.position.y = arrowOffset.y;
+      arrowP2.position.z = arrowOffset.z;
       if (player2.falling == true) {
         player2.position.y -= 1;
       }
       if (player2.position.y <= 10) {
         cancelAnimationFrame(request);
-        $(".general-container").trigger('gameOver', {score: that.score.loser()})
+        $(".general-container").trigger('gameOver', {score: that.score.loser(), winner: false, player: 2})
       }
     }
 

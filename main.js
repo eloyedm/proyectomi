@@ -19,6 +19,7 @@ class Main{
     var highscores = new Highscores();
     var home = new Home();
     var pause = new Pause();
+    var scene = new Escena(window.innerWidth, window.innerHeight, settings.resolution, 2);
     generalContainer.append(home.view());
     if (localStorage.getItem('playerName') == null) {
       generalContainer.append(start.view());
@@ -53,7 +54,7 @@ class Main{
       $('.'+highscores.container).show();
     });
     $(generalContainer).on('letsPlay', function(){
-      var scene = new Escena(window.innerWidth, window.innerHeight, settings.resolution, 1);
+      scene.initialize(1);
       var score = $('<div />', {
         id: "scoreContainer"
       });
@@ -66,20 +67,35 @@ class Main{
       $('#scene-container').append(pause.view());
     });
     $(generalContainer).on('letsPlayTogether', function(){
-      var scene = new Escena(window.innerWidth, window.innerHeight, settings.resolution, 2);
+      scene.initialize(2);
       document.addEventListener('keydown', scene.keyDown);
       document.addEventListener('keyup', scene.keyUp);
       $(generalContainer).hide();
+      var score = $('<div />', {
+        id: "scoreContainer"
+      });
       scene.draw($('#scene-container'));
       $('#scene-container').append(score);
       $('#scene-container').append(pause.view());
     })
     $(generalContainer).on('gameOver', function(e, data){
-      var final = new Final(data.score);
-      console.log("paso por aqui");
-      if($('.final-container').length == 0){
-        $('#scene-container').empty();
-        $('#scene-container').append(final.view());
+      var final = new Final(data.score);      
+      if (scene.players == 2) {
+        if ($('.looser-container, .winner-container').length == 0) {
+          $('#scene-container').empty();
+          if (data.player == 1) {
+            $('#scene-container').append(final.looser(), final.winner());
+          }
+          else{
+            $('#scene-container').append(final.looser(), final.winner());
+          }
+        }
+      }
+      else{
+        if($('.final-container').length == 0){
+          $('#scene-container').empty();
+          $('#scene-container').append(final.view());
+        }
       }
 
       final.addSharers();

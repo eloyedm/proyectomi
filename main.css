@@ -286,3 +286,16 @@
 #pauseContainer .pauseNotice span#quit a{
   color: yellow;
 }
+
+.looser-container, .winner-container{
+  width: 50%;
+  float: left;
+  background-color: #08224c;
+  font-size: 34px;
+  color: white;
+  height: 1024px;
+}
+
+.looser-container span, .winner-container span{
+  color: white;
+}

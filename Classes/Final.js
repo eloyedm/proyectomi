@@ -29,6 +29,23 @@ class Final {
     return this.domElement;
   }
 
+
+  looser(){
+    var el = '<div class="looser-container">'+
+    '<span> YOU LOOSE </span>'+
+    '</div>';
+
+    return el;
+  }
+
+  winner(){
+    var el = '<div class="winner-container">'+
+    '<span> YOU WIN </span>'+
+    '</div>';
+
+    return el;
+  }
+
   addSharers(){
     $(".twitter-share").click(function(){
       VanillaSharing.tw({
